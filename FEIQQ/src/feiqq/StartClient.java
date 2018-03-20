@@ -2,7 +2,9 @@ package feiqq;
 
 import feiqq.socket.client.Client;
 import feiqq.ui.frame.LoginWindow;
-
+/*
+ * zhanghongsheng
+ */
 public class StartClient {
 	
 
