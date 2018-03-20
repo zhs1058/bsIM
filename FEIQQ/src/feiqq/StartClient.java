@@ -4,6 +4,7 @@ import feiqq.socket.client.Client;
 import feiqq.ui.frame.LoginWindow;
 
 public class StartClient {
+	
 
 	public static void main(String[] args) {
 		try {
