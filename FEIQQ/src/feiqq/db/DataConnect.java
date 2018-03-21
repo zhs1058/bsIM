@@ -14,10 +14,12 @@ public class DataConnect {
 	public static Connection getConnect() {
 		try {
 			if (null == conn) {
-				String driver = "oracle.jdbc.driver.OracleDriver";
-				String url = "jdbc:oracle:thin:@localhost:1521:orcl";
+				//String driver = "oracle.jdbc.driver.OracleDriver";
+				//String url = "jdbc:oracle:thin:@localhost:1521:orcl";
+				String driver = "com.mysql.jdbc.Driver";
+				String url = "jdbc:mysql://127.0.0.1:3306/mysql";
 				Class.forName(driver);
-				conn = DriverManager.getConnection(url, "scott", "tiger");
+				conn = DriverManager.getConnection(url, "root", "root");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
