@@ -52,6 +52,7 @@ public class Server {
 			ChannelFuture future = bootstrap.bind(Constants.SERVER_PORT).sync();
 			System.err.println("IP地址为："+Constants.SERVER_IP+"端口为："+Constants.SERVER_PORT);
 			future.channel().closeFuture().sync();
+			System.out.println("channel关闭了?");
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
