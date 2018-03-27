@@ -99,7 +99,7 @@ public class LoginWindow extends JDialog {
 			content = new JPanel() {
 				protected void paintComponent(Graphics g) {
 					super.paintComponent(g);
-					g.drawImage(PictureUtil.getPicture("back5.jpg").getImage(), 0, 0, null);
+					g.drawImage(PictureUtil.getPicture("back3.jpg").getImage(), 0, 0, null);
 					this.setOpaque(false);
 				}
 			};
@@ -108,11 +108,11 @@ public class LoginWindow extends JDialog {
 			getContentPane().add(content, BorderLayout.CENTER);
 			
 			// 头像区域
-			pictureLabel = new JLabel();
-			content.add(pictureLabel);
-			pictureLabel.setBounds(21, 125, 90, 90);
-			pictureLabel.setBorder(Constants.LIGHT_GRAY_BORDER);
-			pictureLabel.setIcon(PictureUtil.getPicture("picture1.jpg"));
+//			pictureLabel = new JLabel();
+//			content.add(pictureLabel);
+//			pictureLabel.setBounds(21, 125, 90, 90);
+//			pictureLabel.setBorder(Constants.LIGHT_GRAY_BORDER);
+//			pictureLabel.setIcon(PictureUtil.getPicture("picture1.jpg"));
 		
 			// 账号
 			userNameField = new JTextField();
