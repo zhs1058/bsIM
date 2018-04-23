@@ -105,7 +105,7 @@ public class CategoryDao extends BaseDao {
 //		if (null != cate) {
 //			return cate;
 //		}
-		String sql = "insert into fqq_category values(zz_fqq_category.nextval,"
+		String sql = "insert into fqq_category (name , owner_id , category_type) values("
 				+ "'"+name+"',"+Integer.valueOf(ownerId)+",'"+type+"') ";
 		int num = operate(sql);
 		if (num > 0) {

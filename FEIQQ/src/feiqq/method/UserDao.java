@@ -34,7 +34,7 @@ public class UserDao extends BaseDao {
 	 * @since JDK 1.7
 	 */
 	public User saveUser(String nick, String name, String pass, String sign) {
-		String sql = "insert into fqq_user values(zz_fqq_user.nextval,'"+nick+"',"+name+",'"+pass+"' ";
+		String sql = "insert into fqq_user (nick_name , user_name , user_password , user_signature ) values('"+nick+"',"+name+",'"+pass+"' ";
 		if (!StringUtil.isEmpty(sign)) {
 			sql += " ,'"+sign+"' ";
 		}

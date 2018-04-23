@@ -76,7 +76,7 @@ public class CateMemberDao extends BaseDao {
 		if (null != cm) {
 			return cm;
 		}
-		String sql = "insert into fqq_category_member values (zz_fqq_category_member.nextval, "+
+		String sql = "insert into fqq_category_member (category_id , owner_id , member_id) values ( "+
 				Integer.valueOf(cateId)+","+ Integer.valueOf(ownerId) +","+Integer.valueOf(memberId)+") ";
 		int num = operate(sql);
 		if (num > 0) {
@@ -112,8 +112,8 @@ public class CateMemberDao extends BaseDao {
 	 * @param memberId 成员Id
 	 */
 	public void deleteByCidAndMid(String cateId, String memberId) {
-		String sql = "delete from fqq_category_member fcm where fcm.category_id = "+
-				Integer.valueOf(cateId)+" and fcm.member_id = " + Integer.valueOf(memberId);
+		String sql = "delete from fqq_category_member  where category_id = "+
+				Integer.valueOf(cateId)+" and member_id = " + Integer.valueOf(memberId);
 		operate(sql);
 	}
 	
@@ -123,8 +123,8 @@ public class CateMemberDao extends BaseDao {
 	 * @param memberId 成员Id
 	 */
 	public void deleteByOidAndMid(String ownerId, String memberId) {
-		String sql = "delete from fqq_category_member fcm where fcm.owner_id = "+
-				Integer.valueOf(ownerId)+" and fcm.member_id = " + Integer.valueOf(memberId);
+		String sql = "delete from fqq_category_member where owner_id = "+
+				Integer.valueOf(ownerId)+" and member_id = " + Integer.valueOf(memberId);
 		operate(sql);
 	}
 	
