@@ -491,9 +491,9 @@ public class FriendPanel extends JPanel {
 								}
 							});
 							pm.add(mit1);
-							pm.add(mit2);
-							pm.add(mit3);
-							pm.add(mit4);
+//							pm.add(mit2);
+//							pm.add(mit3);
+//							pm.add(mit4);
 							pm.show(jTree, e.getX(), e.getY());
 						}
 					}
@@ -518,6 +518,7 @@ public class FriendPanel extends JPanel {
 					for (User friend : list) {
 						FriendNode buddy = new FriendNode(PictureUtil.getPicture("avatar2.png"), friend);
 						cate.add(buddy);
+						//root.add(buddy);
 						// 更新client中好友节点的map，放到client中，为了方便统一调用
 						selfClient.buddyNodeMap.put(friend.getNickName(), buddy);
 					}

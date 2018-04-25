@@ -192,7 +192,8 @@ public class ClientHandler implements ChannelInboundHandler {
 				MusicUtil.playMsgMusic();
 				// TODO 线程叠加了，怎么办呢
 				// 线程叠加，越闪越快，导致最后也恢复不了原状
-				new FlashThread(client, message.getSenderName()).start();
+				FlashThread flash = new FlashThread(client, message.getSenderName());
+				flash.start();
 			} else {
 				ChatRoom room = client.getRoom() == null ? 
 						ChatRoom.getInstance(client) : client.getRoom();
