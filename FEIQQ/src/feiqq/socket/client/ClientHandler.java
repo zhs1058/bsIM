@@ -1,6 +1,7 @@
 package feiqq.socket.client;
 
 import feiqq.bean.Category;
+import feiqq.bean.Group;
 import feiqq.bean.Message;
 import feiqq.bean.User;
 import feiqq.thread.FlashThread;
@@ -13,6 +14,7 @@ import feiqq.ui.frame.ChatRoom;
 import feiqq.ui.frame.ChatRoomPanel;
 import feiqq.ui.frame.MainWindow;
 import feiqq.ui.friend.FriendNode;
+import feiqq.ui.group.GroupNode;
 import feiqq.util.Constants;
 import feiqq.util.JsonUtil;
 import feiqq.util.MusicUtil;
@@ -139,6 +141,20 @@ public class ClientHandler implements ChannelInboundHandler {
 					MyOptionPane.showMessageDialog(client.getMain(), message.getContent(), "友情提示");
 				}
 			}
+			if(Constants.ECHO_ADD_GROUP.equals(message.getPalindType())) {
+				if(Constants.SUCCESS.equals(message.getStatus())) {
+					CategoryNode rootNode = client.getDefaultGroupRoot();
+					Group group = new Group(message.getSenderId(), message.getSenderName());
+					GroupNode groupNode = new GroupNode(PictureUtil.getPicture("group1.png"), group);
+					rootNode.add(groupNode);
+					client.getGroupModel().reload(rootNode);
+					client.groupNodeMap.put(message.getSenderName(), groupNode);
+					MyOptionPane.showMessageDialog(client.getMain(), "添加群聊成功", "友情提示");
+				}
+				if(Constants.FAILURE.equals(message.getStatus())){
+					MyOptionPane.showMessageDialog(client.getMain(), "添加群聊失败", "友情提示");
+				}
+			}
 //			if (Constants.GENRAL_MSG.equals(message.getPalindType()) 
 //					|| Constants.SHAKE_MSG.equals(message.getPalindType())) {
 //				MyOptionPane.showMessageDialog(client.getRoom(), message.getContent(), "友情提示");
@@ -158,6 +174,14 @@ public class ClientHandler implements ChannelInboundHandler {
 				cateNode.remove(friendNode);
 				client.getBuddyModel().reload(cateNode);
 				client.buddyNodeMap.remove(message.getContent());// 清空记录
+			}
+			if(Constants.ECHO_DELETE_GROUP.equals(message.getPalindType())) {
+				System.out.println("回应删除群组执行到这里");
+				GroupNode groupNode = client.groupNodeMap.get(message.getContent());
+				CategoryNode cateNode = (CategoryNode) groupNode.getParent();
+				cateNode.remove(groupNode);
+				client.getGroupModel().reload(cateNode);
+				client.groupNodeMap.remove(message.getContent());// 清空记录
 			}
 			if (Constants.ADD_USER_CATE_MSG.equals(message.getPalindType())) {
 				Category category = message.getCategory();
@@ -184,8 +208,8 @@ public class ClientHandler implements ChannelInboundHandler {
 			if (!client.tabMap.containsKey(message.getReceiverName())) {
 				System.out.println("这是群聊，执行岛这里！！！！");
 				// 将消息存放到相应的队列中
-				Queue<Message> queue = client.msgQueMap.get(message.getSenderName()) == null ? 
-						new LinkedList<Message>() : client.msgQueMap.get(message.getSenderName()); 
+				Queue<Message> queue = client.msgQueMap.get(message.getReceiverName()) == null ? 
+						new LinkedList<Message>() : client.msgQueMap.get(message.getReceiverName()); 
 				queue.offer(message);
 				client.msgQueMap.put(message.getReceiverName(), queue);
 				// 是否有对应好友发消息
@@ -197,8 +221,8 @@ public class ClientHandler implements ChannelInboundHandler {
 				//MusicUtil.playMsgMusic();
 				// TODO 线程叠加了，怎么办呢
 				// 线程叠加，越闪越快，导致最后也恢复不了原状
-				//FlashThread flash = new FlashThread(client, message.getSenderName());
-				//flash.start();
+				FlashThread flash = new FlashThread(client, message.getReceiverName());
+				flash.start();
 			} else {
 				System.out.println("聊天面板已经打开");
 				ChatRoom room = client.getRoom() == null ? 

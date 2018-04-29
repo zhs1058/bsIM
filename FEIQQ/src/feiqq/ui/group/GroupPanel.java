@@ -34,6 +34,7 @@ import feiqq.ui.common.MyScrollBarUI;
 import feiqq.ui.common.MyTabComponent;
 import feiqq.ui.common.MyTreeUI;
 import feiqq.ui.frame.AddFriendWindow;
+import feiqq.ui.frame.AddGroupWindow;
 import feiqq.ui.frame.ChatRoom;
 import feiqq.ui.frame.ChatRoomPanel;
 import feiqq.ui.friend.FriendNode;
@@ -59,6 +60,8 @@ public class GroupPanel extends JPanel {
 		this.setLayout(borderLayout);
 		root = new DefaultMutableTreeNode();
 		model = new DefaultTreeModel(root);
+		selfClient.setGroupRoot(root);
+		selfClient.setGroupModel(model);
 		//定义默认群组
 		CategoryNode root1 = new CategoryNode(PictureUtil.getPicture("arrow_left.png"), new Category("QQ群"));
 		//加载群组数据
@@ -69,6 +72,8 @@ public class GroupPanel extends JPanel {
 		jTree.setCellRenderer(new GroupNodeRenderer());
 		jTree.setRootVisible(false);
 		jTree.setToggleClickCount(1);
+		selfClient.setGroupTree(jTree);
+		selfClient.setDefaultGroupRoot(root1);
 		
 		jScrollPane = new JScrollPane();
 		jScrollPane.setBorder(null);
@@ -265,20 +270,25 @@ public class GroupPanel extends JPanel {
 							JMenuItem mit0 = new JMenuItem("添加群聊");
 							mit0.setOpaque(false);
 							mit0.setFont(Constants.BASIC_FONT);
+							JMenuItem mit1 = new JMenuItem("创建群聊");
+							mit1.setOpaque(false);
+							mit1.setFont(Constants.BASIC_FONT);
 							// 添加群聊
 							mit0.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
 									if (null == selfClient.getAddRriend()) {
-										AddFriendWindow inst = AddFriendWindow.getInstance(selfClient, ((CategoryNode)object).category.getId(), selfClient.getUser());
-										selfClient.setAddRriend(inst);
+										AddGroupWindow inst = AddGroupWindow.getInstance(selfClient, selfClient.getUser());
+										selfClient.setAddGroupWindow(inst);
 									} else {
 										MyOptionPane.showMessageDialog(selfClient.getAddRriend(), "窗口重复打开不太好！", "友情提示");
 										selfClient.getAddRriend().requestFocus();
 									}
 								}
 							});
+							
 							pm.add(mit0);
+							pm.add(mit1);
 							pm.show(jTree, e.getX(), e.getY());
 						}
 						if (object instanceof GroupNode) {
@@ -289,28 +299,24 @@ public class GroupPanel extends JPanel {
 							mit1.setOpaque(false);
 							mit1.setFont(Constants.BASIC_FONT);
 							
-							// 退出群聊
+							//删除群聊
 							mit1.addActionListener(new ActionListener() {
+
 								@Override
-								public void actionPerformed(ActionEvent e) {
-									int res = MyOptionPane.showConfirmDialog(selfClient.getMain(), 
-											"确定or取消？", "删除好友之后，也会将您从对方的好友列表里删除", "确定", "取消");
-									if (res == Constants.YES_OPTION) {
-										FriendNode friendNode = (FriendNode) object;
-										CategoryNode cateNode = (CategoryNode) friendNode.getParent();
-										Message msg = new Message();
-										msg.setType(Constants.DELETE_USER_MEMBER_MSG);
-										msg.setSenderId(selfClient.getUser().getId());
-										msg.setSenderName(selfClient.getUser().getNickName());
-										msg.setReceiverId(friendNode.friend.getId());
-										msg.setContent(cateNode.category.getId() 
-												+ Constants.LEFT_SLASH + friendNode.friend.getId());
-										selfClient.sendMsg(msg);
-									}
-									if (res == Constants.NO_OPTION) {
-										return;
-									}
+								public void actionPerformed(ActionEvent arg0) {
+									GroupNode groupNode = (GroupNode) object;
+									//CategoryNode cateNode = (CategoryNode) groupNode.getParent();
+									Message msg = new Message();
+									msg.setType(Constants.DELETE_GROUP);
+									msg.setSenderId(selfClient.getUser().getId());
+									msg.setSenderName(selfClient.getUser().getNickName());
+									msg.setReceiverName(groupNode.group.getName());
+									msg.setContent(groupNode.group.getId() 
+											+ Constants.LEFT_SLASH + selfClient.getUser().getId());
+									selfClient.sendMsg(msg);
+									
 								}
+								
 							});
 							pm.add(mit1);
 //							pm.add(mit2);
@@ -333,6 +339,7 @@ public class GroupPanel extends JPanel {
 		for(Group group : selfClient.getGroupList()) {
 			GroupNode node = new GroupNode(PictureUtil.getPicture("group1.png"), group);
 			root1.add(node);
+			selfClient.groupNodeMap.put(group.getName(), node);
 		}
 	}
 	

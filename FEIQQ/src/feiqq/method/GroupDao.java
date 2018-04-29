@@ -28,10 +28,26 @@ public class GroupDao extends BaseDao {
 			}
 		}
 		return groupList;
-		
-		
 	}
 
+	/*
+	 * 通过群名称查询群id
+	 */
+	public String selectGroupIdByGroupName(String name) {
+		String sql = "select id from fqq_group where name = '" + name + "'";
+		ResultSet result = select(sql);
+		try {
+			while(result != null && result.next()) {
+				String groupId = Integer.toString(result.getInt("id"));
+				return groupId;
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 	private Group assembleGroup(ResultSet result) {
 		
 		Group group = new Group();

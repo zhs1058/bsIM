@@ -27,18 +27,19 @@ public class GroupNode extends DefaultMutableTreeNode {
 
 		groupContent.setLayout(null);
 		groupContent.setBackground(Color.WHITE);
-		groupContent.setPreferredSize(new Dimension(300, 25));
+		groupContent.setPreferredSize(new Dimension(300, 40));
 
 		picture = new JLabel();
 		groupContent.add(picture);
 		picture.setIcon(icon);
-		picture.setBounds(6, 5, icon.getIconWidth(), icon.getIconHeight());
+		//picture.setBounds(6, 5, icon.getIconWidth(), icon.getIconHeight());
+		picture.setBounds(0, 0, 40, 40);
 
 		nickName = new JLabel();
 		groupContent.add(nickName);
 		nickName.setFont(Constants.BASIC_FONT);
 		nickName.setText(group.getName());
-		nickName.setBounds(40, 0, 238, 28);
+		nickName.setBounds(40, 5, 238, 28);
 	}
 
 	public Component getView() {

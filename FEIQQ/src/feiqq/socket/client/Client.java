@@ -6,6 +6,7 @@ import feiqq.bean.Message;
 import feiqq.bean.User;
 import feiqq.ui.common.CategoryNode;
 import feiqq.ui.frame.AddFriendWindow;
+import feiqq.ui.frame.AddGroupWindow;
 import feiqq.ui.frame.ChatRoom;
 import feiqq.ui.frame.ChatRoomPanel;
 import feiqq.ui.frame.LoginWindow;
@@ -60,6 +61,8 @@ public class Client {
 	private RegisterWindow register;
 	/** 添加好友框 */
 	private AddFriendWindow addRriend;
+	/** 添加群聊框 */
+	private AddGroupWindow addGroupWindow;
 	/** 聊天室 */
 	private ChatRoom room;
 	/** 系统托盘 */
@@ -70,6 +73,15 @@ public class Client {
 	private DefaultTreeModel buddyModel;
 	/** 好友treeRoot */
 	private DefaultMutableTreeNode buddyRoot;
+	
+	/** 群组tree */
+	private JTree groupTree;
+	/** 群组treeModel */
+	private DefaultTreeModel groupModel;
+	/** 群组treeRoot */
+	private DefaultMutableTreeNode groupRoot;
+	/** 默认群组CategoryNode */
+	private CategoryNode defaultGroupRoot;
 
 	/** key：好友名称 value：tab块 */
 	public Map<String, ChatRoomPanel> tabMap = new HashMap<String, ChatRoomPanel>();
@@ -237,6 +249,48 @@ public class Client {
 	public void setGroupList(List<Group> groupList) {
 		this.groupList = groupList;
 	}
+
+	public JTree getGroupTree() {
+		return groupTree;
+	}
+
+	public void setGroupTree(JTree groupTree) {
+		this.groupTree = groupTree;
+	}
+
+	public DefaultTreeModel getGroupModel() {
+		return groupModel;
+	}
+
+	public void setGroupModel(DefaultTreeModel groupModel) {
+		this.groupModel = groupModel;
+	}
+
+	public DefaultMutableTreeNode getGroupRoot() {
+		return groupRoot;
+	}
+
+	public void setGroupRoot(DefaultMutableTreeNode groupRoot) {
+		this.groupRoot = groupRoot;
+	}
+
+	public AddGroupWindow getAddGroupWindow() {
+		return addGroupWindow;
+	}
+
+	public void setAddGroupWindow(AddGroupWindow addGroupWindow) {
+		this.addGroupWindow = addGroupWindow;
+	}
+
+	public CategoryNode getDefaultGroupRoot() {
+		return defaultGroupRoot;
+	}
+
+	public void setDefaultGroupRoot(CategoryNode defaultGroupRoot) {
+		this.defaultGroupRoot = defaultGroupRoot;
+	}
+	
+	
 	
 	
 	

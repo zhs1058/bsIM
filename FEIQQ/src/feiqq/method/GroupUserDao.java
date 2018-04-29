@@ -8,6 +8,16 @@ import java.util.List;
 import feiqq.bean.Group;
 
 public class GroupUserDao extends BaseDao {
+	
+	/*
+	 * 保存
+	 */
+	public void Save(String groupId, String userId) {
+		String sql = "insert into fqq_group_user (group_id , user_id) values ('"
+				+ Integer.parseInt(groupId) + "','"
+				+ Integer.parseInt(userId) + "')";
+		operate(sql);
+	}
 
 	/*
 	 * 通过成员id查询群组
@@ -44,6 +54,16 @@ public class GroupUserDao extends BaseDao {
 			e.printStackTrace();
 		}
 		return userIdList;
+	}
+	
+	/*
+	 * 通过群id和用户id退出群聊
+	 */
+	public void deleteByGroupIdAndUserId(String groupId, String userId) {
+		String sql = "delete from fqq_group_user where group_id = '"
+				+ Integer.parseInt(groupId) + "' and "
+				+ "user_id = '" + Integer.parseInt(userId) + "'";
+		operate(sql);
 	}
 
 	

@@ -140,7 +140,6 @@ public class ServerHandler implements ChannelInboundHandler {
 		Message message = JsonUtil.transToBean(msgStr);
 		// 登陆
 		if (null != message && Constants.LOGIN_MSG.equals(message.getType())) {
-			System.out.println("执行到登陆。。。。");
 			String content = message.getContent();
 			String msgStr1[] = content.split(Constants.LEFT_SLASH);
 			User user = userDao.getByUserName(msgStr1[0]);
@@ -218,19 +217,15 @@ public class ServerHandler implements ChannelInboundHandler {
 					}
 				}
 			}else{
-				System.out.println("执行岛这里");
 				backMsg.setSenderType(Constants.GROUPCHAT);
 				List<Integer> userIdList = groupUserDao.selectUserIdByGroupId(message.getReceiverId());
-				System.out.println("马上进入到判断");
 				if(userIdList != null && userIdList.size() >= 0) {
 					for(Integer userId : userIdList) {
 						System.out.println("用户id为：" + userId);
 						if(!message.getSenderId().equals(String.valueOf(userId))){
-							System.out.println("没进去判断?");
 							temp = clientMap.get(String.valueOf(userId));
 							System.out.println("获取channel");
 							if(temp != null) {
-								System.out.println("获取到channel，并进入判断");
 								String tempInfo = temp.remoteAddress().toString();
 								backMsg.setReceiverAddress(tempInfo.substring(1, tempInfo.indexOf(":")));
 								backMsg.setReceiverPort(tempInfo.substring(tempInfo.indexOf(":") + 1, tempInfo.length()));
@@ -388,6 +383,39 @@ public class ServerHandler implements ChannelInboundHandler {
 			backMsg.setContent(cate.getId());
 			backMsg.setList(getMemberNickList(list));
 			sendMsg(channel, backMsg);
+		}
+		//删除群聊
+		if(null != message && Constants.DELETE_GROUP.equals(message.getType())) {
+			Message backMsg = new Message();
+			String content[] = message.getContent().split(Constants.LEFT_SLASH);
+			groupUserDao.deleteByGroupIdAndUserId(content[0], content[1]);
+			backMsg.setType(Constants.PALIND_MSG);
+			backMsg.setPalindType(Constants.ECHO_DELETE_GROUP);
+			backMsg.setContent(message.getReceiverName());
+			sendMsg(channel, backMsg);
+		}
+		//加入群聊
+		if(null != message && Constants.ADD_GROUP.equals(message.getType())) {
+			Message backMsg = new Message();
+			String groupName = message.getContent();
+//			backMsg.setSenderName(message.getSenderName());
+//			backMsg.setSenderId(message.getSenderId());
+			backMsg.setType(Constants.PALIND_MSG);
+			backMsg.setPalindType(Constants.ECHO_ADD_GROUP);
+			backMsg.setContent(groupName);
+			String groupId = groupDao.selectGroupIdByGroupName(groupName);
+			sendMsg(channel, backMsg);
+			if(groupId == null) {
+				backMsg.setStatus(Constants.FAILURE);
+			}else {
+				groupUserDao.Save(groupId, message.getSenderId());
+				backMsg.setSenderName(groupName);
+				backMsg.setSenderId(groupId);
+				backMsg.setStatus(Constants.SUCCESS);
+				sendMsg(channel, backMsg);
+				
+			}
+			
 		}
 		// 删除成员
 		if (null != message && Constants.DELETE_USER_MEMBER_MSG.equals(message.getType())) {

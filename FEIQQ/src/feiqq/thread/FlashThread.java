@@ -9,6 +9,7 @@ import javax.swing.tree.TreePath;
 import feiqq.socket.client.Client;
 import feiqq.ui.common.CategoryNode;
 import feiqq.ui.friend.FriendNode;
+import feiqq.ui.group.GroupNode;
 import feiqq.util.PictureUtil;
 
 public class FlashThread extends Thread {
@@ -23,26 +24,55 @@ public class FlashThread extends Thread {
 	
 	public void run() {
 		try {
-			DefaultTreeModel treeModel = client.getBuddyModel();
+			TreePath path = null;
+			TrayIcon icon = null;
+			CategoryNode parentNode = null;
+			String parentName = null;
+			DefaultTreeModel treeModel = null;
+			GroupNode gNode = null;
 			FriendNode node = client.buddyNodeMap.get(senderName);
-			CategoryNode parentNode = (CategoryNode) node.getParent();
-			TreePath path = new TreePath(parentNode.getPath());
-			String parentName = parentNode.nickName.getText();
-			TrayIcon icon = client.getIcon();
+			if(node == null) {
+				treeModel = client.getBuddyModel();
+				gNode = client.groupNodeMap.get(senderName);
+				parentNode = (CategoryNode) gNode.getParent();
+				path = new TreePath(parentNode.getPath());
+				parentName = parentNode.nickName.getText();
+				icon = client.getIcon();
+			}else {
+				treeModel = client.getGroupModel();
+				parentNode = (CategoryNode) node.getParent();
+				path = new TreePath(parentNode.getPath());
+				parentName = parentNode.nickName.getText();
+				icon = client.getIcon();
+			}
+			
 			
 			// TODO 这里有点儿别扭，以后记得改，好冗杂
 			while (client.msgStatusMap.get(senderName)) {
 				// 节点已展开就不再闪烁父节点
-				if (client.getBuddyTree().isExpanded(path)) {
-					node.picture.setBounds(9, 5, 40, 43);
-					icon.setImage(new ImageIcon("").getImage());
-					Thread.sleep(600);
-					treeModel.reload(node);
+				if (client.getBuddyTree().isExpanded(path) || client.getGroupTree().isExpanded(path)) {
+					if(node != null) {
+						node.picture.setBounds(9, 5, 40, 43);
+						icon.setImage(new ImageIcon("").getImage());
+						Thread.sleep(600);
+						treeModel.reload(node);
+						
+						node.picture.setBounds(8, 4, 39, 42);
+						icon.setImage(PictureUtil.getPicture("qq_icon.png").getImage());
+						Thread.sleep(600);
+						treeModel.reload(node);
+					}else {
+						gNode.picture.setBounds(1, 1, 41, 41);
+						icon.setImage(new ImageIcon("").getImage());
+						Thread.sleep(600);
+						treeModel.reload(gNode);
+						
+						gNode.picture.setBounds(0, 0, 40, 40);
+						icon.setImage(PictureUtil.getPicture("qq_icon.png").getImage());
+						Thread.sleep(600);
+						treeModel.reload(gNode);
+					}
 					
-					node.picture.setBounds(8, 4, 39, 42);
-					icon.setImage(PictureUtil.getPicture("qq_icon.png").getImage());
-					Thread.sleep(600);
-					treeModel.reload(node);
 				} else {
 					parentNode.nickName.setText("");
 					icon.setImage(new ImageIcon("").getImage());

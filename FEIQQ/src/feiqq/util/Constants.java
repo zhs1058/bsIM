@@ -56,6 +56,18 @@ public class Constants {
 	public static String FRIEND = "20";
 	/** 群聊 */
 	public static String GROUPCHAT = "21";
+	/** 退出群聊 */
+	public static String DELETE_GROUP = "22";
+	/** 添加群聊*/
+	public static String ADD_GROUP = "23";
+	/** 查找群聊*/
+	public static String SEARCH_GROUP = "24";
+	/** 回应退出群聊 */
+	public static String ECHO_DELETE_GROUP = "25";
+	/** 回应添加群聊*/
+	public static String ECHO_ADD_GROUP = "26";
+	/** 回应查找群聊*/
+	public static String ECHO_SEARCH_GROUP = "27";
 
 	public static String USER = "user";
 	public static String GROUP = "group";
