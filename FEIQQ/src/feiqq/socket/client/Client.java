@@ -1,6 +1,7 @@
 package feiqq.socket.client;
 
 import feiqq.bean.Category;
+import feiqq.bean.Group;
 import feiqq.bean.Message;
 import feiqq.bean.User;
 import feiqq.ui.common.CategoryNode;
@@ -11,6 +12,7 @@ import feiqq.ui.frame.LoginWindow;
 import feiqq.ui.frame.MainWindow;
 import feiqq.ui.frame.RegisterWindow;
 import feiqq.ui.friend.FriendNode;
+import feiqq.ui.group.GroupNode;
 import feiqq.util.Constants;
 import feiqq.util.JsonUtil;
 import io.netty.bootstrap.Bootstrap;
@@ -73,6 +75,8 @@ public class Client {
 	public Map<String, ChatRoomPanel> tabMap = new HashMap<String, ChatRoomPanel>();
 	/** key：好友名称 value：node节点 */
 	public Map<String, FriendNode> buddyNodeMap = new HashMap<String, FriendNode>();
+	/** key： 群组名称value: node节点*/
+	public Map<String, GroupNode> groupNodeMap = new HashMap<String, GroupNode>();
 	/** key：分组Id value：node节点 */
 	public Map<String, CategoryNode> cateNodeMap = new HashMap<String, CategoryNode>();
 	/** key：好友名称 value：消息浏览状态 （用于确定头像的闪动） */
@@ -84,6 +88,7 @@ public class Client {
 	private User user;
 	private List<Category> categoryList;
 	private List<Map<String, List<User>>> memberList;
+	private List<Group> groupList;
 
 	public Client() {
 		final ClientHandler clientHandler = new ClientHandler(this);
@@ -224,5 +229,16 @@ public class Client {
 	public void setMemberList(List<Map<String, List<User>>> memberList) {
 		this.memberList = memberList;
 	}
+
+	public List<Group> getGroupList() {
+		return groupList;
+	}
+
+	public void setGroupList(List<Group> groupList) {
+		this.groupList = groupList;
+	}
+	
+	
+	
 
 }

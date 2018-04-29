@@ -38,6 +38,8 @@ public class Message {
 	private String type;
 	/** 回文类型 */
 	private String palindType;
+	/** 发送者类别*/
+	private String senderType;
 
 	// TODO
 	private String status;
@@ -49,6 +51,8 @@ public class Message {
 	private User user;
 	private List<Category> categoryList;
 	private List<Map<String, List<User>>> memberList;
+	private List<Group> groupList;
+	//private List<Map<String, List<String>>> groupUserList;
 
 	// TODO 文字样式
 	private Integer size;
@@ -81,6 +85,15 @@ public class Message {
 		this.user = user;
 		this.categoryList = categoryList;
 		this.memberList = memberList;
+	}
+	
+	public Message(String type, User user, List<Category> categoryList,
+			List<Map<String, List<User>>> memberList , List<Group> groupList ) {
+		this.type = type;
+		this.user = user;
+		this.categoryList = categoryList;
+		this.memberList = memberList;
+		this.groupList = groupList;
 	}
 
 	public String getSenderId() {
@@ -275,4 +288,22 @@ public class Message {
 		this.imageMark = imageMark;
 	}
 
+	public List<Group> getGroupList() {
+		return groupList;
+	}
+
+	public void setGroupList(List<Group> groupList) {
+		this.groupList = groupList;
+	}
+
+	public String getSenderType() {
+		return senderType;
+	}
+
+	public void setSenderType(String senderType) {
+		this.senderType = senderType;
+	}
+
+	
+	
 }

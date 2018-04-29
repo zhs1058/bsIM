@@ -131,7 +131,7 @@ public class MainWindow extends JDialog {
 			content = new JPanel() {
 				protected void paintComponent(Graphics g) {
 					super.paintComponent(g);
-					g.drawImage(PictureUtil.getPicture("back5.jpg").getImage(), 0, 0, null);
+					g.drawImage(PictureUtil.getPicture("back4.jpg").getImage(), 0, 0, null);
 					this.setOpaque(false);
 				}
 			};
@@ -236,7 +236,7 @@ public class MainWindow extends JDialog {
 					.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT)), friendPanel);
 
 			// 群组列表
-			groupPanel = new GroupPanel();
+			groupPanel = new GroupPanel(client);
 			typeInfo.addTab(null, new ImageIcon(PictureUtil.getPicture("tab_group.png")
 					.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT)), groupPanel);
 
@@ -324,6 +324,12 @@ public class MainWindow extends JDialog {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				skinButton.setIcon(PictureUtil.getPicture("skin_active.png"));
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				//AddFriendWindow addFriendWindow = AddFriendWindow.getInstance(client, user.getId(), user);
+				//client.setAddRriend(addFriendWindow);
+				
 			}
 		});
 		// 最小化按钮事件

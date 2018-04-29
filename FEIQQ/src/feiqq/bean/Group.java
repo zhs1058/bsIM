@@ -7,6 +7,10 @@ public class Group {
 	/** 群组名称 */
 	private String name;
 	
+	public Group() {
+		
+	}
+	
 	public Group(String name) {
 		this.name = name;
 	}

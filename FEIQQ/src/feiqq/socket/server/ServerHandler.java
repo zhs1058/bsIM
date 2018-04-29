@@ -8,10 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import feiqq.bean.Category;
+import feiqq.bean.Group;
 import feiqq.bean.CateMember;
 import feiqq.bean.Message;
 import feiqq.bean.User;
 import feiqq.method.CategoryDao;
+import feiqq.method.GroupDao;
+import feiqq.method.GroupUserDao;
 import feiqq.method.OffLineDao;
 import feiqq.method.CateMemberDao;
 import feiqq.method.UserDao;
@@ -28,6 +31,8 @@ public class ServerHandler implements ChannelInboundHandler {
 	private UserDao userDao;
 	private CategoryDao cateDao;
 	private CateMemberDao memberDao;
+	private GroupUserDao groupUserDao;
+	private GroupDao groupDao;
 	private OffLineDao offLineDao;
 
 	// 这里其实可以直接使用ip存储，为了防止一台电脑登录多个账号
@@ -44,6 +49,8 @@ public class ServerHandler implements ChannelInboundHandler {
 		userDao = new UserDao();
 		cateDao = new CategoryDao();
 		memberDao = new CateMemberDao();
+		groupUserDao = new GroupUserDao();
+		groupDao = new GroupDao();
 		offLineDao = new OffLineDao();
 	}
 
@@ -150,6 +157,7 @@ public class ServerHandler implements ChannelInboundHandler {
 					//System.out.println("发送消息");
 				}
 			}
+			offLineDao.deleteMessage(user.getId());
 		}
 		// TODO 现在的场景还不需要
 		if (null != message && Constants.EXIT_MSG.equals(message.getType())) {
@@ -178,13 +186,7 @@ public class ServerHandler implements ChannelInboundHandler {
 			String info = channel.remoteAddress().toString();
 			backMsg.setSenderAddress(info.substring(1, info.indexOf(":")));
 			backMsg.setSenderPort(info.substring(info.indexOf(":") + 1, info.length()));
-			// 接收方IP
-			Channel temp = clientMap.get(message.getReceiverId());
-			if(temp != null) {
-				String tempInfo = temp.remoteAddress().toString();
-				backMsg.setReceiverAddress(tempInfo.substring(1, tempInfo.indexOf(":")));
-				backMsg.setReceiverPort(tempInfo.substring(tempInfo.indexOf(":") + 1, tempInfo.length()));
-			}
+			
 			// 消息内容
 			if (Constants.GENRAL_MSG.equals(message.getType())) {
 				backMsg.setContent(message.getContent());
@@ -197,29 +199,55 @@ public class ServerHandler implements ChannelInboundHandler {
 				// 图片
 				backMsg.setImageMark(message.getImageMark());
 			}
-			
-			// 对方在线
-			if (null != clientMap.get(message.getReceiverId())) {
-				
-				sendMsg(clientMap.get(message.getReceiverId()), backMsg);
-			} else {
-//				backMsg.setType(Constants.PALIND_MSG);
-//				if (Constants.GENRAL_MSG.equals(message.getType())) {
-//					backMsg.setPalindType(Constants.GENRAL_MSG);
-//				}
-//				if (Constants.SHAKE_MSG.equals(message.getType())) {
-//					backMsg.setPalindType(Constants.SHAKE_MSG);
-//				}
-//				backMsg.setContent("对方没在线儿，离线还未实现，敬请期待！");
-				boolean flag = offLineDao.saveMessage(backMsg);
-				
-				if(!flag) {
-					// TODO 离线消息发送失败  ，系统消息待实现
+			// 接收方IP
+			Channel temp = clientMap.get(message.getReceiverId());
+			if(Constants.FRIEND.equals(message.getSenderType())) {
+				if(temp != null) {
+					String tempInfo = temp.remoteAddress().toString();
+					backMsg.setReceiverAddress(tempInfo.substring(1, tempInfo.indexOf(":")));
+					backMsg.setReceiverPort(tempInfo.substring(tempInfo.indexOf(":") + 1, tempInfo.length()));
+					backMsg.setSenderType(Constants.FRIEND);
 				}
-				
-//				sendMsg(channel, backMsg);
-				
+				//对方是否在线
+				if (null != clientMap.get(message.getReceiverId())) {
+					sendMsg(clientMap.get(message.getReceiverId()), backMsg);
+				}else {
+					boolean flag = offLineDao.saveMessage(backMsg);
+					if(!flag) {
+						// TODO 离线消息发送失败  ，系统消息待实现
+					}
+				}
+			}else{
+				System.out.println("执行岛这里");
+				backMsg.setSenderType(Constants.GROUPCHAT);
+				List<Integer> userIdList = groupUserDao.selectUserIdByGroupId(message.getReceiverId());
+				System.out.println("马上进入到判断");
+				if(userIdList != null && userIdList.size() >= 0) {
+					for(Integer userId : userIdList) {
+						System.out.println("用户id为：" + userId);
+						if(!message.getSenderId().equals(String.valueOf(userId))){
+							System.out.println("没进去判断?");
+							temp = clientMap.get(String.valueOf(userId));
+							System.out.println("获取channel");
+							if(temp != null) {
+								System.out.println("获取到channel，并进入判断");
+								String tempInfo = temp.remoteAddress().toString();
+								backMsg.setReceiverAddress(tempInfo.substring(1, tempInfo.indexOf(":")));
+								backMsg.setReceiverPort(tempInfo.substring(tempInfo.indexOf(":") + 1, tempInfo.length()));
+								sendMsg(clientMap.get(String.valueOf(userId)), backMsg);
+							}else {
+								boolean flag = offLineDao.saveMessage(backMsg);
+								if(!flag) {
+									// TODO 离线消息发送失败  ，系统消息待实现
+								}
+							}
+						}
+					}
+				}
 			}
+			
+			
+			
 		}
 		// 注册
 		if (null != message && Constants.REGISTER_MSG.equals(message.getType())) {
@@ -472,8 +500,10 @@ public class ServerHandler implements ChannelInboundHandler {
 		
 		
 		// TODO 暂时不管群组
+		List<String> ids = groupUserDao.selectGroupByUserId(user.getId());
+		List<Group> groupList = groupDao.selectGroupById(ids);
 		List<Category> cateList = cateDao.getListByUIdAndType(user.getId(), Constants.USER);
-		return new Message(Constants.PALIND_MSG, user, cateList, getMemberList(cateList));
+		return new Message(Constants.PALIND_MSG, user, cateList, getMemberList(cateList), groupList);
 	}
 	
 	/**

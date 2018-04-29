@@ -295,60 +295,60 @@ public class FriendPanel extends JPanel {
 											selfClient.msgStatusMap.put(user.getNickName(), false);
 //											// 告知client，下次来消息了继续闪烁
 //											selfClient.threadMap.put(user.getName(), false);
-										} else {
-											room.setTitle(selfClient.getUser().getNickName() + " - " + user.getNickName());
-											room.titleLabel.setText(selfClient.getUser().getNickName() + " - " + user.getNickName());
-											int index = room.tabbedPane.indexOfTab(user.getNickName());
-											room.tabbedPane.setSelectedIndex(index);
-											ChatRoomPanel pane = (ChatRoomPanel) room.tabbedPane.getComponentAt(index);
-											// 将队列里面的消息显示在面板上
-											if (selfClient.msgQueMap.size() > 0) {
-												try {
-													while ((message = selfClient.msgQueMap.get(user.getNickName()).poll()) != null) {
-														StyledDocument doc = pane.historyTextPane.getStyledDocument();
-														// 名称、日期
-														SimpleAttributeSet nameSet = getAttributeSet(true, null);
-														doc.insertString(doc.getLength(), StringUtil.createSenderInfo(message.getSenderName()), nameSet);
-														SimpleAttributeSet contentSet = getAttributeSet(false, message);
-														// 缩进
-														StyleConstants.setLeftIndent(contentSet, 10);
-														// 此处开始缩进
-														doc.setParagraphAttributes(doc.getLength(), doc.getLength(), contentSet, true);
-														// 正文
-														// 文字或者图文混合
-														if (!StringUtil.isEmpty(message.getContent())) {
-															// 记录下这行消息插入的光标在哪里
-															// 将光标放置到消息的最后
-															pane.position = doc.getLength();
-															doc.insertString(doc.getLength(), message.getContent(), contentSet);
-															if (!StringUtil.isEmpty(message.getImageMark()) && message.getImageMark().split("/").length > 0) {
-																for (String str : message.getImageMark().split("/")) {
-																	int imgIndex = Integer.valueOf(str.substring(str.indexOf("|")+1));// 图片的位置（下标）
-																	pane.historyTextPane.setCaretPosition(pane.position+imgIndex);// 光标
-																	String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
-																	String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
-																	pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
-																}
-															}
-														} else {// 文字为空，说明发送的全部是图片
-															for (String str : message.getImageMark().split("/")) {
-																// 此处要插入图片
-																pane.historyTextPane.setCaretPosition(doc.getLength());// 光标
-																String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
-																String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
-																pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
-															}
-														}
-														// 换行
-														doc.insertString(doc.getLength(), "\n", contentSet);
-														// 将缩进还原回来
-														StyleConstants.setLeftIndent(contentSet, 0f);
-														doc.setParagraphAttributes(doc.getLength(), doc.getLength(), contentSet, true);
-													}
-												} catch (BadLocationException e1) {
-													e1.printStackTrace();
-												}
-											}
+//										} else {
+//											room.setTitle(selfClient.getUser().getNickName() + " - " + user.getNickName());
+//											room.titleLabel.setText(selfClient.getUser().getNickName() + " - " + user.getNickName());
+//											int index = room.tabbedPane.indexOfTab(user.getNickName());
+//											room.tabbedPane.setSelectedIndex(index);
+//											ChatRoomPanel pane = (ChatRoomPanel) room.tabbedPane.getComponentAt(index);
+//											// 将队列里面的消息显示在面板上
+//											if (selfClient.msgQueMap.size() > 0) {
+//												try {
+//													while ((message = selfClient.msgQueMap.get(user.getNickName()).poll()) != null) {
+//														StyledDocument doc = pane.historyTextPane.getStyledDocument();
+//														// 名称、日期
+//														SimpleAttributeSet nameSet = getAttributeSet(true, null);
+//														doc.insertString(doc.getLength(), StringUtil.createSenderInfo(message.getSenderName()), nameSet);
+//														SimpleAttributeSet contentSet = getAttributeSet(false, message);
+//														// 缩进
+//														StyleConstants.setLeftIndent(contentSet, 10);
+//														// 此处开始缩进
+//														doc.setParagraphAttributes(doc.getLength(), doc.getLength(), contentSet, true);
+//														// 正文
+//														// 文字或者图文混合
+//														if (!StringUtil.isEmpty(message.getContent())) {
+//															// 记录下这行消息插入的光标在哪里
+//															// 将光标放置到消息的最后
+//															pane.position = doc.getLength();
+//															doc.insertString(doc.getLength(), message.getContent(), contentSet);
+//															if (!StringUtil.isEmpty(message.getImageMark()) && message.getImageMark().split("/").length > 0) {
+//																for (String str : message.getImageMark().split("/")) {
+//																	int imgIndex = Integer.valueOf(str.substring(str.indexOf("|")+1));// 图片的位置（下标）
+//																	pane.historyTextPane.setCaretPosition(pane.position+imgIndex);// 光标
+//																	String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
+//																	String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
+//																	pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
+//																}
+//															}
+//														} else {// 文字为空，说明发送的全部是图片
+//															for (String str : message.getImageMark().split("/")) {
+//																// 此处要插入图片
+//																pane.historyTextPane.setCaretPosition(doc.getLength());// 光标
+//																String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
+//																String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
+//																pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
+//															}
+//														}
+//														// 换行
+//														doc.insertString(doc.getLength(), "\n", contentSet);
+//														// 将缩进还原回来
+//														StyleConstants.setLeftIndent(contentSet, 0f);
+//														doc.setParagraphAttributes(doc.getLength(), doc.getLength(), contentSet, true);
+//													}
+//												} catch (BadLocationException e1) {
+//													e1.printStackTrace();
+//												}
+//											}
 										}
 									}
 									model.reload(((FriendNode)friend));

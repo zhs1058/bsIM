@@ -59,7 +59,7 @@ public class OffLineDao extends BaseDao {
 	 * 删除留言信息
 	 */
 	public void deleteMessage(String receiverId) {
-		String sql = "delete from fqq_offline fo where fo.receiver_id = '" + receiverId +  "'";
+		String sql = "delete from fqq_offline where receiver_id = '" + receiverId +  "'";
 		operate(sql);
 	}
 	private Message assembleMessage(ResultSet result) {

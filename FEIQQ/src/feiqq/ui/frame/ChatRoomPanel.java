@@ -31,6 +31,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import feiqq.bean.Group;
 import feiqq.bean.Message;
 import feiqq.bean.User;
 import feiqq.socket.client.Client;
@@ -95,6 +96,7 @@ public class ChatRoomPanel extends JPanel {
 	
 	public User self;
 	public User friend;
+	public Group group;
 	private Client client;
 	
 	/** 记录图片 */
@@ -108,6 +110,14 @@ public class ChatRoomPanel extends JPanel {
 		this.self = self;
 		this.client = client;
 		this.friend = friend;
+		initGUI();
+		initListener();
+	}
+	public ChatRoomPanel(Client client, User self, Group group) {
+		super();
+		this.self = self;
+		this.client = client;
+		this.group = group;
 		initGUI();
 		initListener();
 	}
@@ -135,14 +145,27 @@ public class ChatRoomPanel extends JPanel {
 			nickName = new JLabel();
 			friendInfoPane.add(nickName);
 			nickName.setFont(Constants.BASIC_FONT);
-			nickName.setText(friend.getNickName());
+			//TODO
+			if(friend != null) {
+				nickName.setText(friend.getNickName());
+			}
+			else {
+				nickName.setText(group.getName());
+			}
+			
 			nickName.setBounds(70, 10, 402, 25);
 			
 			descript = new JLabel();
 			friendInfoPane.add(descript);
 			descript.setFont(Constants.BASIC_FONT);
 			descript.setBounds(70, 35, 402, 25);
-			descript.setText(friend.getSignature());
+			//TODO
+			if(friend != null) {
+				descript.setText(friend.getSignature());
+			}else {
+				descript.setText("群聊");
+			}
+			
 			
 			// 历史记录
 			history = new JPanel();
@@ -440,8 +463,17 @@ public class ChatRoomPanel extends JPanel {
 		Message message = new Message();
 		message.setSenderId(self.getId());
 		message.setSenderName(self.getNickName());
-		message.setReceiverId(friend.getId());
-		message.setReceiverName(friend.getNickName());
+		//TODO
+		if(friend != null) {
+			message.setReceiverId(friend.getId());
+			message.setReceiverName(friend.getNickName());
+			message.setSenderType(Constants.FRIEND);
+		}else {
+			message.setReceiverId(group.getId());
+			message.setReceiverName(group.getName());
+			message.setSenderType(Constants.GROUPCHAT);
+		}
+		
 		message.setType(type);
 		if (Constants.GENRAL_MSG.equals(type)) {
 			message.setContent(str);
@@ -531,7 +563,6 @@ public class ChatRoomPanel extends JPanel {
 		try {
 			doc.insertString(doc.getLength(), StringUtil.createSenderInfo(self.getNickName()), getFontSet(Color.BLUE));
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -589,7 +620,6 @@ public class ChatRoomPanel extends JPanel {
 			inputTextPane.setText("");
 			inputTextPane.setCaretPosition(0);
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -77,6 +77,7 @@ public class ClientHandler implements ChannelInboundHandler {
 					client.setUser(message.getUser());
 					client.setCategoryList(message.getCategoryList());
 					client.setMemberList(message.getMemberList());
+				    client.setGroupList(message.getGroupList());
 					// 初始化主界面
 					MainWindow inst = MainWindow.getInstance(client);
 					client.setMain(inst);
@@ -176,8 +177,89 @@ public class ClientHandler implements ChannelInboundHandler {
 				cateNode.nickName.setText(category.getName());
 			}
 		}
-		// 普通
-		if (null != message && Constants.GENRAL_MSG.equals(message.getType())) {
+		
+		// 普通 群聊
+		if(null != message && Constants.GENRAL_MSG.equals(message.getType()) && Constants.GROUPCHAT.equals(message.getSenderType())) {
+			// 相应好友的panel没打开
+			if (!client.tabMap.containsKey(message.getReceiverName())) {
+				System.out.println("这是群聊，执行岛这里！！！！");
+				// 将消息存放到相应的队列中
+				Queue<Message> queue = client.msgQueMap.get(message.getSenderName()) == null ? 
+						new LinkedList<Message>() : client.msgQueMap.get(message.getSenderName()); 
+				queue.offer(message);
+				client.msgQueMap.put(message.getReceiverName(), queue);
+				// 是否有对应好友发消息
+				client.msgStatusMap.put(message.getReceiverName(), true);
+				System.out.println("消息执行到这里");
+				// TODO 这个地方，关掉了相应窗口再打开的呢，应该如何处理，难道在开启一个线程？
+				// 哎呀呀，java竟然已经帮我考虑到了，run方法执行完毕，次线程会被自动回收，好犀利
+				//TODO 声音不好使
+				//MusicUtil.playMsgMusic();
+				// TODO 线程叠加了，怎么办呢
+				// 线程叠加，越闪越快，导致最后也恢复不了原状
+				//FlashThread flash = new FlashThread(client, message.getSenderName());
+				//flash.start();
+			} else {
+				System.out.println("聊天面板已经打开");
+				ChatRoom room = client.getRoom() == null ? 
+						ChatRoom.getInstance(client) : client.getRoom();
+				room.setTitle(message.getReceiverName());
+				room.titleLabel.setText(message.getReceiverName());
+				int index = room.tabbedPane.indexOfTab(message.getReceiverName());
+				room.tabbedPane.setSelectedIndex(index);
+				try {
+					ChatRoomPanel pane = (ChatRoomPanel) room.tabbedPane.getComponentAt(index);
+					StyledDocument doc = pane.historyTextPane.getStyledDocument();
+					// 名称、日期
+					SimpleAttributeSet nameSet = getAttributeSet(true, null);
+					doc.insertString(doc.getLength(), StringUtil.createSenderInfo(message.getSenderName()), nameSet);
+					SimpleAttributeSet contentSet = getAttributeSet(false, message);
+					// 缩进
+					StyleConstants.setLeftIndent(contentSet, 10); //设置左缩进
+					// 此处开始缩进
+					doc.setParagraphAttributes(doc.getLength(), doc.getLength(), contentSet, true);
+					// 正文
+					// 文字或者图文混合
+					if (!StringUtil.isEmpty(message.getContent())) {
+						// 记录下这行消息插入的光标在哪里
+						// 将光标放置到消息的最后
+						pane.position = doc.getLength();
+						doc.insertString(doc.getLength(), message.getContent(), contentSet);
+						if (!StringUtil.isEmpty(message.getImageMark()) && message.getImageMark().split("/").length > 0) {
+							for (String str : message.getImageMark().split("/")) {
+								int imgIndex = Integer.valueOf(str.substring(str.indexOf("|")+1));// 图片的位置（下标）
+								pane.historyTextPane.setCaretPosition(pane.position+imgIndex);// 光标
+								String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
+								String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
+								pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
+							}
+						}
+					} else {// 文字为空，说明发送的全部是图片
+						for (String str : message.getImageMark().split("/")) {
+							// 此处要插入图片
+							pane.historyTextPane.setCaretPosition(doc.getLength());// 光标
+							String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
+							String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
+							pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
+						}
+					}
+					// 换行
+					doc.insertString(doc.getLength(), "\n", contentSet);
+					// 将缩进还原回来
+					StyleConstants.setLeftIndent(contentSet, 0f);
+					doc.setParagraphAttributes(doc.getLength(), doc.getLength(), contentSet, true);
+				} catch (BadLocationException e1) {
+					e1.printStackTrace();
+				}
+				// 当前窗体获得焦点
+				room.requestFocus();
+				// 音乐
+				MusicUtil.playMsgMusic();
+			}
+		}
+		
+		// 普通 好友单发
+		if (null != message && Constants.GENRAL_MSG.equals(message.getType()) && Constants.FRIEND.equals(message.getSenderType())) {
 			// 相应好友的panel没打开
 			if (!client.tabMap.containsKey(message.getSenderName())) {
 				// 将消息存放到相应的队列中
@@ -187,9 +269,11 @@ public class ClientHandler implements ChannelInboundHandler {
 				client.msgQueMap.put(message.getSenderName(), queue);
 				// 是否有对应好友发消息
 				client.msgStatusMap.put(message.getSenderName(), true);
+				System.out.println("消息执行到这里");
 				// TODO 这个地方，关掉了相应窗口再打开的呢，应该如何处理，难道在开启一个线程？
 				// 哎呀呀，java竟然已经帮我考虑到了，run方法执行完毕，次线程会被自动回收，好犀利
-				MusicUtil.playMsgMusic();
+				//TODO 声音不好使
+				//MusicUtil.playMsgMusic();
 				// TODO 线程叠加了，怎么办呢
 				// 线程叠加，越闪越快，导致最后也恢复不了原状
 				FlashThread flash = new FlashThread(client, message.getSenderName());
@@ -209,7 +293,7 @@ public class ClientHandler implements ChannelInboundHandler {
 					doc.insertString(doc.getLength(), StringUtil.createSenderInfo(message.getSenderName()), nameSet);
 					SimpleAttributeSet contentSet = getAttributeSet(false, message);
 					// 缩进
-					StyleConstants.setLeftIndent(contentSet, 10);
+					StyleConstants.setLeftIndent(contentSet, 10); //设置左缩进
 					// 此处开始缩进
 					doc.setParagraphAttributes(doc.getLength(), doc.getLength(), contentSet, true);
 					// 正文

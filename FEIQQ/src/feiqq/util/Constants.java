@@ -52,6 +52,10 @@ public class Constants {
 	public static String ADD_USER_CATE_MSG = "12";
 	/** 修改分组（user） */
 	public static String EDIT_USER_CATE_MSG = "13";
+	/** 好友 */
+	public static String FRIEND = "20";
+	/** 群聊 */
+	public static String GROUPCHAT = "21";
 
 	public static String USER = "user";
 	public static String GROUP = "group";
@@ -68,8 +72,8 @@ public class Constants {
 	public static String LEFT_SLASH = "/";
 
 	public static String SEARCH_TXT = "搜索：联系人、群组";
-	public static String DEFAULT_CATE = "我的好友";
-	public static String NONAME_CATE = "未命名";
+	public static String DEFAULT_CATE = "friends";
+	public static String NONAME_CATE = "Unnamed";
 	
 	// 微软雅黑
 	public static Font BASIC_FONT = new Font("微软雅黑", Font.PLAIN, 12);
