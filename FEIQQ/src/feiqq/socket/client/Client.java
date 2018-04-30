@@ -9,6 +9,7 @@ import feiqq.ui.frame.AddFriendWindow;
 import feiqq.ui.frame.AddGroupWindow;
 import feiqq.ui.frame.ChatRoom;
 import feiqq.ui.frame.ChatRoomPanel;
+import feiqq.ui.frame.CreateGroupWindow;
 import feiqq.ui.frame.LoginWindow;
 import feiqq.ui.frame.MainWindow;
 import feiqq.ui.frame.RegisterWindow;
@@ -63,6 +64,8 @@ public class Client {
 	private AddFriendWindow addRriend;
 	/** 添加群聊框 */
 	private AddGroupWindow addGroupWindow;
+	/** 创建群聊框 */
+	private CreateGroupWindow createGroupWindow;
 	/** 聊天室 */
 	private ChatRoom room;
 	/** 系统托盘 */
@@ -288,6 +291,14 @@ public class Client {
 
 	public void setDefaultGroupRoot(CategoryNode defaultGroupRoot) {
 		this.defaultGroupRoot = defaultGroupRoot;
+	}
+
+	public CreateGroupWindow getCreateGroupWindow() {
+		return createGroupWindow;
+	}
+
+	public void setCreateGroupWindow(CreateGroupWindow createGroupWindow) {
+		this.createGroupWindow = createGroupWindow;
 	}
 	
 	

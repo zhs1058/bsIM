@@ -8,6 +8,14 @@ import java.util.List;
 import feiqq.bean.Group;
 
 public class GroupDao extends BaseDao {
+	
+	/*
+	 * 创建群聊
+	 */
+	public void saveGroup(String name) {
+		String sql = "insert into fqq_group (name) values ('" + name + "')";
+		operate(sql);
+	}
 
 	/*
 	 * 通过id查询群组

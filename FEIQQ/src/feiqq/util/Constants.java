@@ -68,6 +68,10 @@ public class Constants {
 	public static String ECHO_ADD_GROUP = "26";
 	/** 回应查找群聊*/
 	public static String ECHO_SEARCH_GROUP = "27";
+	/** 创建群聊*/
+	public static String CREATE_GROUP = "28";
+	/** 回应创建群聊*/
+	public static String ECHO_CREATE_GROUP = "29";
 
 	public static String USER = "user";
 	public static String GROUP = "group";

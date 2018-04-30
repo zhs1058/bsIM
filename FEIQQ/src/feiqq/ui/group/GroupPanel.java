@@ -37,6 +37,7 @@ import feiqq.ui.frame.AddFriendWindow;
 import feiqq.ui.frame.AddGroupWindow;
 import feiqq.ui.frame.ChatRoom;
 import feiqq.ui.frame.ChatRoomPanel;
+import feiqq.ui.frame.CreateGroupWindow;
 import feiqq.ui.friend.FriendNode;
 import feiqq.util.Constants;
 import feiqq.util.PictureUtil;
@@ -280,6 +281,20 @@ public class GroupPanel extends JPanel {
 									if (null == selfClient.getAddRriend()) {
 										AddGroupWindow inst = AddGroupWindow.getInstance(selfClient, selfClient.getUser());
 										selfClient.setAddGroupWindow(inst);
+									} else {
+										MyOptionPane.showMessageDialog(selfClient.getAddRriend(), "窗口重复打开不太好！", "友情提示");
+										selfClient.getAddRriend().requestFocus();
+									}
+								}
+							});
+							
+							// 创建群聊
+							mit1.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									if (null == selfClient.getAddRriend()) {
+										CreateGroupWindow inst = CreateGroupWindow.getInstance(selfClient, selfClient.getUser());
+										selfClient.setCreateGroupWindow(inst);
 									} else {
 										MyOptionPane.showMessageDialog(selfClient.getAddRriend(), "窗口重复打开不太好！", "友情提示");
 										selfClient.getAddRriend().requestFocus();

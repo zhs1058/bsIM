@@ -394,6 +394,27 @@ public class ServerHandler implements ChannelInboundHandler {
 			backMsg.setContent(message.getReceiverName());
 			sendMsg(channel, backMsg);
 		}
+		//创建群聊
+		if(null != message && Constants.CREATE_GROUP.equals(message.getType())) {
+			Message backMsg = new Message();
+			String groupName = message.getContent();
+			groupDao.saveGroup(groupName);
+			String groupId = groupDao.selectGroupIdByGroupName(groupName);
+			
+			backMsg.setType(Constants.PALIND_MSG);
+			backMsg.setPalindType(Constants.ECHO_CREATE_GROUP);
+			backMsg.setContent(groupName);
+			if(groupId == null) {
+				backMsg.setStatus(Constants.FAILURE);
+			}else {
+				groupUserDao.Save(groupId, message.getSenderId());
+				backMsg.setSenderName(groupName);
+				backMsg.setSenderId(groupId);
+				backMsg.setStatus(Constants.SUCCESS);
+				sendMsg(channel, backMsg);
+				
+			}
+		}
 		//加入群聊
 		if(null != message && Constants.ADD_GROUP.equals(message.getType())) {
 			Message backMsg = new Message();
@@ -404,7 +425,7 @@ public class ServerHandler implements ChannelInboundHandler {
 			backMsg.setPalindType(Constants.ECHO_ADD_GROUP);
 			backMsg.setContent(groupName);
 			String groupId = groupDao.selectGroupIdByGroupName(groupName);
-			sendMsg(channel, backMsg);
+			//sendMsg(channel, backMsg);
 			if(groupId == null) {
 				backMsg.setStatus(Constants.FAILURE);
 			}else {

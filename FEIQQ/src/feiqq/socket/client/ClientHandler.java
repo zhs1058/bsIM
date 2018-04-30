@@ -141,6 +141,7 @@ public class ClientHandler implements ChannelInboundHandler {
 					MyOptionPane.showMessageDialog(client.getMain(), message.getContent(), "友情提示");
 				}
 			}
+			//回应添加群聊
 			if(Constants.ECHO_ADD_GROUP.equals(message.getPalindType())) {
 				if(Constants.SUCCESS.equals(message.getStatus())) {
 					CategoryNode rootNode = client.getDefaultGroupRoot();
@@ -153,6 +154,21 @@ public class ClientHandler implements ChannelInboundHandler {
 				}
 				if(Constants.FAILURE.equals(message.getStatus())){
 					MyOptionPane.showMessageDialog(client.getMain(), "添加群聊失败", "友情提示");
+				}
+			}
+			//回应创建群聊
+			if(Constants.ECHO_CREATE_GROUP.equals(message.getPalindType())) {
+				if(Constants.SUCCESS.equals(message.getStatus())) {
+					CategoryNode rootNode = client.getDefaultGroupRoot();
+					Group group = new Group(message.getSenderId(), message.getSenderName());
+					GroupNode groupNode = new GroupNode(PictureUtil.getPicture("group1.png"), group);
+					rootNode.add(groupNode);
+					client.getGroupModel().reload(rootNode);
+					client.groupNodeMap.put(message.getSenderName(), groupNode);
+					MyOptionPane.showMessageDialog(client.getMain(), "创建群聊成功", "友情提示");
+				}
+				if(Constants.FAILURE.equals(message.getStatus())){
+					MyOptionPane.showMessageDialog(client.getMain(), "创建群聊失败", "友情提示");
 				}
 			}
 //			if (Constants.GENRAL_MSG.equals(message.getPalindType()) 
