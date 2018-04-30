@@ -9,12 +9,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import feiqq.bean.Group;
 import feiqq.bean.User;
 
 public class RecentNode extends DefaultMutableTreeNode {
 
 	public Icon icon;
 	public User friend;
+	public Group group;
 	public JLabel picture;
 	public JLabel nickName;
 	public JLabel descript;
@@ -24,7 +26,16 @@ public class RecentNode extends DefaultMutableTreeNode {
 		super();
 		this.icon = icon;
 		this.friend = friend;
-
+		initGUI();
+	}
+	
+	public RecentNode(Icon icon, Group group) {
+		super();
+		this.icon = icon;
+		this.group = group;
+		initGUI();
+	}
+	public void initGUI() {
 		userContent.setLayout(null);
 		userContent.setBackground(Color.WHITE);
 		userContent.setPreferredSize(new Dimension(300, 50));
@@ -36,13 +47,21 @@ public class RecentNode extends DefaultMutableTreeNode {
 
 		nickName = new JLabel();
 		userContent.add(nickName);
-		nickName.setText(friend.getNickName());
+		if(friend != null) {
+			nickName.setText(friend.getNickName());
+		}else {
+			nickName.setText(group.getName());
+		}
+		
 		nickName.setBounds(59, 5, 132, 19);
 
 		descript = new JLabel();
 		userContent.add(descript);
-		descript.setText(friend.getSignature());
-		descript.setBounds(59, 28, 132, 17);
+		if(friend != null) {
+			descript.setText(friend.getSignature());
+			descript.setBounds(59, 28, 132, 17);
+		}
+		
 	}
 
 	public Component getView() {
@@ -64,5 +83,14 @@ public class RecentNode extends DefaultMutableTreeNode {
 	public void setFriend(User friend) {
 		this.friend = friend;
 	}
+
+	public Group getGroup() {
+		return group;
+	}
+
+	public void setGroup(Group group) {
+		this.group = group;
+	}
+	
 
 }

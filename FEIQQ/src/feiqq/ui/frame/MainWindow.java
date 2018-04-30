@@ -241,9 +241,10 @@ public class MainWindow extends JDialog {
 					.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT)), groupPanel);
 
 			// 会话列表（最近联系人）
-			recentPanel = new RecentPanel();
+			recentPanel = new RecentPanel(client);
 			typeInfo.addTab(null, new ImageIcon(PictureUtil.getPicture("tab_recent.png")
 					.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT)), recentPanel);
+			client.setRecentPanel(recentPanel);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();

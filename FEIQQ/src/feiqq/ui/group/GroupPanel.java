@@ -190,7 +190,8 @@ public class GroupPanel extends JPanel {
 											int index = room.tabbedPane.indexOfTab(groupMember.getName());
 											room.tabbedPane.setSelectedIndex(index);
 											// 将队列里面的消息显示在面板上
-											
+											//将近期打开的群组记录在最近打开模块
+											selfClient.getRecentPanel().loadTree(groupMember);
 											//TODO 消息队列应该吧群组和好友分开, 但是统一不是更好吗
 											if (selfClient.msgQueMap.size() > 0) {
 												try {

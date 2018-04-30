@@ -15,6 +15,8 @@ import feiqq.ui.frame.MainWindow;
 import feiqq.ui.frame.RegisterWindow;
 import feiqq.ui.friend.FriendNode;
 import feiqq.ui.group.GroupNode;
+import feiqq.ui.recent.RecentNode;
+import feiqq.ui.recent.RecentPanel;
 import feiqq.util.Constants;
 import feiqq.util.JsonUtil;
 import io.netty.bootstrap.Bootstrap;
@@ -85,6 +87,15 @@ public class Client {
 	private DefaultMutableTreeNode groupRoot;
 	/** 默认群组CategoryNode */
 	private CategoryNode defaultGroupRoot;
+	
+	/** 最近聊天tree */
+	private JTree recentTree;
+	/** 最近聊天treeModel */
+	private DefaultTreeModel recentModel;
+	/** 最近聊天treeRoot */
+	private DefaultMutableTreeNode recentRoot;
+	/** 最近聊天 */
+	private RecentPanel recentPanel;
 
 	/** key：好友名称 value：tab块 */
 	public Map<String, ChatRoomPanel> tabMap = new HashMap<String, ChatRoomPanel>();
@@ -92,6 +103,8 @@ public class Client {
 	public Map<String, FriendNode> buddyNodeMap = new HashMap<String, FriendNode>();
 	/** key： 群组名称value: node节点*/
 	public Map<String, GroupNode> groupNodeMap = new HashMap<String, GroupNode>();
+	/** key： 最近聊天value：node节点*/
+	public Map<String, RecentNode> recentNodeMap = new HashMap<String, RecentNode>();
 	/** key：分组Id value：node节点 */
 	public Map<String, CategoryNode> cateNodeMap = new HashMap<String, CategoryNode>();
 	/** key：好友名称 value：消息浏览状态 （用于确定头像的闪动） */
@@ -300,6 +313,40 @@ public class Client {
 	public void setCreateGroupWindow(CreateGroupWindow createGroupWindow) {
 		this.createGroupWindow = createGroupWindow;
 	}
+
+	public JTree getRecentTree() {
+		return recentTree;
+	}
+
+	public void setRecentTree(JTree recentTree) {
+		this.recentTree = recentTree;
+	}
+
+	public DefaultTreeModel getRecentModel() {
+		return recentModel;
+	}
+
+	public void setRecentModel(DefaultTreeModel recentModel) {
+		this.recentModel = recentModel;
+	}
+
+	public DefaultMutableTreeNode getRecentRoot() {
+		return recentRoot;
+	}
+
+	public void setRecentRoot(DefaultMutableTreeNode recentRoot) {
+		this.recentRoot = recentRoot;
+	}
+
+	public RecentPanel getRecentPanel() {
+		return recentPanel;
+	}
+
+	public void setRecentPanel(RecentPanel recentPanel) {
+		this.recentPanel = recentPanel;
+	}
+	
+	
 	
 	
 	

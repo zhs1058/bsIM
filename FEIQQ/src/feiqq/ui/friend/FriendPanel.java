@@ -43,6 +43,7 @@ import feiqq.ui.common.MyTreeUI;
 import feiqq.ui.frame.AddFriendWindow;
 import feiqq.ui.frame.ChatRoom;
 import feiqq.ui.frame.ChatRoomPanel;
+import feiqq.ui.recent.RecentPanel;
 import feiqq.util.Constants;
 import feiqq.util.PictureUtil;
 import feiqq.util.StringUtil;
@@ -62,7 +63,6 @@ public class FriendPanel extends JPanel {
 	
 	public FriendPanel(Client client) {
 		this.selfClient = client;
-		
 		setLayout(new BorderLayout());
 		
 		root = new DefaultMutableTreeNode();
@@ -240,6 +240,10 @@ public class FriendPanel extends JPanel {
 													new MyTabComponent(selfClient.getUser().getNickName(), user.getNickName(), room, selfClient));
 											int index = room.tabbedPane.indexOfTab(user.getNickName());
 											room.tabbedPane.setSelectedIndex(index);
+											
+											//将近期打开的好友信息展现在最近模块上
+											//TODO
+											selfClient.getRecentPanel().loadTree(user);
 											// 将队列里面的消息显示在面板上
 											if (selfClient.msgQueMap.size() > 0) {
 												try {
