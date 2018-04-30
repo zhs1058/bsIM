@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import feiqq.bean.Message;
+import feiqq.util.Constants;
 
 public class OffLineDao extends BaseDao {
 	
@@ -79,6 +80,7 @@ public class OffLineDao extends BaseDao {
 			message.setContent(result.getString("content"));
 			message.setType(result.getString("type"));
 			message.setPalindType(result.getString("palind_type"));
+			message.setSenderType(Constants.FRIEND);
 			
 			message.setSize(result.getInt("size"));
 			message.setFamily(result.getString("family"));

@@ -55,7 +55,7 @@ public class FriendPanel extends JPanel {
 	private DefaultMutableTreeNode root;
 	private JScrollPane jScrollPane;
 	private JTextField textField;
-	private static Color inColor = new Color(254, 224, 109); 
+	private static Color inColor = new Color(173, 216, 230); 
 	private static Color selectColor = new Color(249, 184, 87);
 	
 	private Client selfClient;

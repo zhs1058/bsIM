@@ -230,7 +230,6 @@ public class ClientHandler implements ChannelInboundHandler {
 				client.msgQueMap.put(message.getReceiverName(), queue);
 				// 是否有对应好友发消息
 				client.msgStatusMap.put(message.getReceiverName(), true);
-				System.out.println("消息执行到这里");
 				// TODO 这个地方，关掉了相应窗口再打开的呢，应该如何处理，难道在开启一个线程？
 				// 哎呀呀，java竟然已经帮我考虑到了，run方法执行完毕，次线程会被自动回收，好犀利
 				//TODO 声音不好使
@@ -240,7 +239,6 @@ public class ClientHandler implements ChannelInboundHandler {
 				FlashThread flash = new FlashThread(client, message.getReceiverName());
 				flash.start();
 			} else {
-				System.out.println("聊天面板已经打开");
 				ChatRoom room = client.getRoom() == null ? 
 						ChatRoom.getInstance(client) : client.getRoom();
 				room.setTitle(message.getReceiverName());

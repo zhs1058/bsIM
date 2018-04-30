@@ -23,6 +23,8 @@ public class Constants {
 	public static int SERVER_PORT = 5555;
 
 	// 消息类型
+	/** 群聊普通 */
+	public static String GROUP_GENRAL_MSG = "-1";
 	/** 普通 */
 	public static String GENRAL_MSG = "0";
 	/** 抖动 */

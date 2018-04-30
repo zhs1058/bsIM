@@ -230,6 +230,12 @@ public class MainWindow extends JDialog {
 	        typeInfo.setBackground(new Color(255, 255, 255, 200));
 			typeInfo.setBorder(Constants.GRAY_BORDER);
 			
+			// 会话列表（最近联系人）
+			recentPanel = new RecentPanel(client);
+			typeInfo.addTab(null, new ImageIcon(PictureUtil.getPicture("tab_recent.png")
+					.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT)), recentPanel);
+			client.setRecentPanel(recentPanel);
+			
 			// 好友列表
 			friendPanel = new FriendPanel(client);
 			typeInfo.addTab(null, new ImageIcon(PictureUtil.getPicture("tab_boddy.png")
@@ -240,11 +246,7 @@ public class MainWindow extends JDialog {
 			typeInfo.addTab(null, new ImageIcon(PictureUtil.getPicture("tab_group.png")
 					.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT)), groupPanel);
 
-			// 会话列表（最近联系人）
-			recentPanel = new RecentPanel(client);
-			typeInfo.addTab(null, new ImageIcon(PictureUtil.getPicture("tab_recent.png")
-					.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT)), recentPanel);
-			client.setRecentPanel(recentPanel);
+			
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
