@@ -511,7 +511,7 @@ public class ServerHandler implements ChannelInboundHandler {
 			return new Message(Constants.PALIND_MSG, Constants.REGISTER_MSG, "昵称已被占用，请重新输入！");
 		}
 		if (null != userDao.getByUserName(msgStr[1])) {
-			return new Message(Constants.PALIND_MSG, Constants.REGISTER_MSG, "账号已被注册，请重新输入！");
+			return new Message(Constants.PALIND_MSG, Constants.REGISTER_MSG, "账号已经注册，请尝试找回密码！");
 		}
 		if (msgStr.length < 4) {
 			user = userDao.saveUser(msgStr[0], msgStr[1], msgStr[2], null);

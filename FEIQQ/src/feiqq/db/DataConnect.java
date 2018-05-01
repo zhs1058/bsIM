@@ -17,7 +17,7 @@ public class DataConnect {
 				//String driver = "oracle.jdbc.driver.OracleDriver";
 				//String url = "jdbc:oracle:thin:@localhost:1521:orcl";
 				String driver = "com.mysql.jdbc.Driver";
-				String url = "jdbc:mysql://127.0.0.1:3306/mysql";
+				String url = "jdbc:mysql://127.0.0.1:3306/mysql?useUnicode=true&characterEncoding=utf8";
 				Class.forName(driver);
 				conn = DriverManager.getConnection(url, "root", "root");
 			}

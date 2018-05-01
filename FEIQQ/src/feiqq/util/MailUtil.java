@@ -13,7 +13,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class MailUtil {
-	public static void main(String[] args) throws MessagingException {
+	public static void sendMail(String toM, String code) throws MessagingException {
 		// 创建Properties 类用于记录邮箱的一些属性
         Properties props = new Properties();
         // 表示SMTP发送邮件，必须进行身份验证
@@ -21,7 +21,7 @@ public class MailUtil {
         //此处填写SMTP服务器
         props.put("mail.smtp.host", "smtp.qq.com");
         //设置是否显示debug信息  true 会在控制台显示相关信息
-        props.put("mail.debug", "true");
+        //props.put("mail.debug", "true");
         //端口号，QQ邮箱给出了两个端口，但是另一个我一直使用不了，所以就给出这一个587
         props.put("mail.smtp.port", "465");
         // 此处填写你的账号
@@ -54,14 +54,14 @@ public class MailUtil {
         message.setFrom(form);
 
         // 设置收件人的邮箱
-        InternetAddress toMail = new InternetAddress("1789888628@qq.com");
+        InternetAddress toMail = new InternetAddress(toM);
         message.setRecipient(RecipientType.TO, toMail);
 
         // 设置邮件标题
-        message.setSubject("测试邮件");
+        message.setSubject("验证码");
 
         // 设置邮件的内容体
-        message.setContent("这是一封测试邮件", "text/html;charset=UTF-8");
+        message.setContent("<h1>【毕设IM】您的验证码为：</h1><h3>" + code + "</h3><h2>如果不是您本人操作，请忽略本邮件</h2>", "text/html;charset=UTF-8");
 
         // 最后当然就是发送邮件啦
         Transport.send(message);

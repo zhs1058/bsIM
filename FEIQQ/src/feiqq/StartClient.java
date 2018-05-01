@@ -2,6 +2,7 @@ package feiqq;
 
 import feiqq.socket.client.Client;
 import feiqq.ui.frame.LoginWindow;
+import feiqq.util.MailUtil;
 /*
  * zhanghongsheng
  */

@@ -9,6 +9,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.mail.MessagingException;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,7 +24,9 @@ import feiqq.socket.client.Client;
 import feiqq.ui.common.MyOptionPane;
 import feiqq.ui.common.MyScrollBarUI;
 import feiqq.util.Constants;
+import feiqq.util.MailUtil;
 import feiqq.util.PictureUtil;
+import feiqq.util.StringRandomUtil;
 import feiqq.util.StringUtil;
 import feiqq.util.ValidateUtil;
 
@@ -35,6 +38,12 @@ public class RegisterWindow  extends JDialog {
 	
 	private JLabel okButton;
 	private JLabel quitButton;
+	private JLabel CodeButton;
+	private String TestCoding;
+	private int sendCount = 0;
+	private long curTime;
+	private long preTime;
+	private long differenceTime;
 
 	/** 账号Txt */
 	private JLabel userNameLabel;
@@ -44,6 +53,8 @@ public class RegisterWindow  extends JDialog {
 	private JLabel passWordLabel;
 	/** 确认密码Txt */
 	private JLabel repeatPassLabel;
+	/** 验证码  */
+	private JLabel testCodeLabel;
 	/** 签名Txt */
 	private JLabel signatureLabel;
 
@@ -55,6 +66,8 @@ public class RegisterWindow  extends JDialog {
 	private JPasswordField passWordField;
 	/** 确认密码 */
 	private JPasswordField repeatPassField;
+	/** 验证码 */
+	private JTextField testCodeField;
 	/** 签名 */
 	private JTextArea signatureArea;
 	private JScrollPane signatureScroll;
@@ -78,7 +91,7 @@ public class RegisterWindow  extends JDialog {
 	
 	private void initGUI() {
 		try {
-			setSize(397, 300);
+			setSize(407, 350);
 			setUndecorated(true);
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			
@@ -86,7 +99,7 @@ public class RegisterWindow  extends JDialog {
 				@Override
 				protected void paintComponent(Graphics g) {
 					super.paintComponent(g);
-					g.drawImage(PictureUtil.getPicture("back5.jpg").getImage(), 0, 0, null);
+					g.drawImage(PictureUtil.getPicture("back7.jpg").getImage(), 0, 0, null);
 					this.setOpaque(false);
 				}
 			};
@@ -96,10 +109,10 @@ public class RegisterWindow  extends JDialog {
 		
 			exitButton = new JLabel();
 			content.add(exitButton);
-			exitButton.setBounds(358, 0, 40, 20);
+			exitButton.setBounds(368, 0, 40, 20);
 			exitButton.setIcon(PictureUtil.getPicture("close.png"));
 
-			nickNameLabel = new JLabel("昵      称：");
+			nickNameLabel = new JLabel("昵     称：");
 			content.add(nickNameLabel);
 			nickNameLabel.setFont(Constants.BASIC_FONT);
 			nickNameLabel.setBounds(30, 33, 70, 20);
@@ -109,7 +122,7 @@ public class RegisterWindow  extends JDialog {
 			nickNameField.setBounds(110, 30, 240, 28);
 			nickNameField.setBorder(Constants.LIGHT_GRAY_BORDER);
 			
-			userNameLabel = new JLabel("账      号");
+			userNameLabel = new JLabel("账     号");
 			content.add(userNameLabel);
 			userNameLabel.setFont(Constants.BASIC_FONT);
 			userNameLabel.setBounds(30, 73, 70, 20);
@@ -118,8 +131,9 @@ public class RegisterWindow  extends JDialog {
 			content.add(userNameField);
 			userNameField.setBounds(110, 70, 240, 28);
 			userNameField.setBorder(Constants.LIGHT_GRAY_BORDER);
+			userNameField.setText("电子邮件");
 		
-			passWordLabel = new JLabel("密      码");
+			passWordLabel = new JLabel("密     码");
 			content.add(passWordLabel);
 			passWordLabel.setFont(Constants.BASIC_FONT);
 			passWordLabel.setBounds(30, 113, 70, 20);
@@ -138,11 +152,29 @@ public class RegisterWindow  extends JDialog {
 			content.add(repeatPassField);
 			repeatPassField.setBounds(110, 150, 240, 28);
 			repeatPassField.setBorder(Constants.LIGHT_GRAY_BORDER);
+			
+			testCodeLabel = new JLabel("验  证  码");
+			content.add(testCodeLabel);
+			testCodeLabel.setFont(Constants.BASIC_FONT);
+			testCodeLabel.setBounds(30, 193, 70, 20);
+
+			testCodeField = new JPasswordField();
+			content.add(testCodeField);
+			testCodeField.setBounds(110, 190, 240, 28);
+			testCodeField.setBorder(Constants.LIGHT_GRAY_BORDER);
+			
+			CodeButton = new JLabel("获取", JLabel.CENTER);
+			content.add(CodeButton);
+			CodeButton.setFont(Constants.BASIC_FONT);
+			CodeButton.setBorder(null);
+			CodeButton.setBounds(350, 193, 40, 20);
+			CodeButton.setOpaque(false);
+			CodeButton.setBackground(new Color(240, 245, 240, 60));
 		
-			signatureLabel = new JLabel("备      注");
+			signatureLabel = new JLabel("个性签名");
 			content.add(signatureLabel);
 			signatureLabel.setFont(Constants.BASIC_FONT);
-			signatureLabel.setBounds(30, 193, 70, 20);
+			signatureLabel.setBounds(30, 233, 70, 20);
 		
 			signatureScroll = new JScrollPane();
 			content.add(signatureScroll);
@@ -153,13 +185,13 @@ public class RegisterWindow  extends JDialog {
 			signatureScroll.setBorder(Constants.LIGHT_GRAY_BORDER);
 			signatureScroll.setViewportView(signatureArea);
 			signatureScroll.getVerticalScrollBar().setUI(new MyScrollBarUI());
-			signatureScroll.setBounds(110, 190, 240, 60);
+			signatureScroll.setBounds(110, 230, 240, 60);
 		
 			okButton = new JLabel("确定", JLabel.CENTER);
 			content.add(okButton);
 			okButton.setFont(Constants.BASIC_FONT);
 			okButton.setBorder(null);
-			okButton.setBounds(110, 260, 80, 30);
+			okButton.setBounds(110, 300, 80, 30);
 			okButton.setOpaque(false);
 			okButton.setBackground(new Color(240, 245, 240, 60));
 		
@@ -167,7 +199,7 @@ public class RegisterWindow  extends JDialog {
 			content.add(quitButton);
 			quitButton.setFont(Constants.BASIC_FONT);
 			quitButton.setBorder(null);
-			quitButton.setBounds(220, 260, 80, 30);
+			quitButton.setBounds(220, 300, 80, 30);
 			quitButton.setOpaque(false);
 			quitButton.setBackground(new Color(240, 245, 240, 60));
 		} catch (Exception e) {
@@ -204,6 +236,44 @@ public class RegisterWindow  extends JDialog {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				register();
+			}
+		});
+		//获取验证码事件
+		CodeButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseExited(MouseEvent e) {
+				CodeButton.setBorder(null);
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				CodeButton.setBorder(Constants.GRAY_BORDER);
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				String name = userNameField.getText();
+				if (StringUtil.isEmpty(name)) {
+					MyOptionPane.showMessageDialog(client.getRegister(), "没有输入账号！", "友情提示");
+					return;
+				}
+				if (!ValidateUtil.isMail(name)) {
+					MyOptionPane.showMessageDialog(client.getRegister(), "请检查邮件格式！", "友情提示");
+					return;
+				}
+				if(sendCount > 2) {
+					MyOptionPane.showMessageDialog(client.getRegister(), "验证码不能重复发送超过2次！", "友情提示");
+					return;
+				}
+				TestCoding = StringRandomUtil.getStringRandom();
+				try {
+					MailUtil.sendMail(name, TestCoding);
+					sendCount ++ ;
+					MyOptionPane.showMessageDialog(client.getRegister(), "验证码发送成功！", "友情提示");
+					return;
+				} catch (MessagingException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 			}
 		});
 		// 取消按钮事件
@@ -295,6 +365,7 @@ public class RegisterWindow  extends JDialog {
 	private void register() {
 		String nick = nickNameField.getText();
 		String name = userNameField.getText();
+		String testCode = testCodeField.getText();
 		String pass = String.valueOf(passWordField.getPassword());
 		String rept = String.valueOf(repeatPassField.getPassword());
 		String sign = signatureArea.getText();
@@ -308,19 +379,27 @@ public class RegisterWindow  extends JDialog {
 			nickNameField.setText(nick.substring(0, 10));
 			return;
 		}
+		if (StringUtil.isEmpty(testCode)) {
+			MyOptionPane.showMessageDialog(client.getRegister(), "没有输入验证码！", "友情提示");
+			return;
+		}
 		if (StringUtil.isEmpty(name)) {
 			MyOptionPane.showMessageDialog(client.getRegister(), "没有输入账号！", "友情提示");
 			return;
 		}
-		if (!ValidateUtil.isNumber(name)) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "账号必须为数字！", "友情提示");
+		if (!ValidateUtil.isMail(name)) {
+			MyOptionPane.showMessageDialog(client.getRegister(), "请检查邮件格式！", "友情提示");
 			return;
 		}
-		if (name.length() > 10) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "账号长度不可以超过10位！", "友情提示");
-			userNameField.setText(name.substring(0, 10));
+		if(!TestCoding.equals(testCode)) {
+			MyOptionPane.showMessageDialog(client.getRegister(), "验证码错误，请注意大小写一致！", "友情提示");
 			return;
 		}
+//		if (name.length() > 10) {
+//			MyOptionPane.showMessageDialog(client.getRegister(), "账号长度不可以超过10位！", "友情提示");
+//			userNameField.setText(name.substring(0, 10));
+//			return;
+//		}
 		if (StringUtil.isEmpty(pass)) {
 			MyOptionPane.showMessageDialog(client.getRegister(), "没有输入密码！", "友情提示");
 			return;

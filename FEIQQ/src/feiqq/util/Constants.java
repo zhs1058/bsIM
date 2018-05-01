@@ -8,9 +8,8 @@ import javax.swing.border.Border;
 
 /**
  * Description: 工具类 <br/>
- * Date: 2014年11月20日 下午2:36:04 <br/>
  * 
- * @author SongFei
+ * 
  * @version
  * @since JDK 1.7
  * @see
