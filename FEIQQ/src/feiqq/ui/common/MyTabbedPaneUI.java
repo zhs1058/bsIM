@@ -10,7 +10,7 @@ import org.sexydock.tabs.jhrome.JhromeTabbedPaneUI;
 
 /**
  * 漂亮倒是漂亮，可惜用不了，哎。。。
- * @author Administrator
+ * 
  *
  */
 public class MyTabbedPaneUI extends JhromeTabbedPaneUI {

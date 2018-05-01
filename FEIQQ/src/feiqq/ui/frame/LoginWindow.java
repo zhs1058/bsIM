@@ -401,7 +401,7 @@ public class LoginWindow extends JDialog {
 					RegisterWindow inst = RegisterWindow.getInstance(client);
 					client.setRegister(inst);
 				} else {
-					MyOptionPane.showMessageDialog(client.getLogin(), "窗口重复打开不太好哦！", "友情提示");
+					//MyOptionPane.showMessageDialog(client.getLogin(), "窗口重复打开不太好哦！", "友情提示");
 					client.getRegister().requestFocus();
 				}
 			}

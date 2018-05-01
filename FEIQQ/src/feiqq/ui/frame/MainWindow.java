@@ -14,6 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -29,13 +31,16 @@ import com.alee.laf.tabbedpane.TabStretchType;
 import com.alee.laf.tabbedpane.TabbedPaneStyle;
 import com.alee.laf.tabbedpane.WebTabbedPane;
 
+import feiqq.bean.Message;
 import feiqq.bean.User;
 import feiqq.socket.client.Client;
+import feiqq.ui.common.MyOptionPane;
 import feiqq.ui.friend.FriendPanel;
 import feiqq.ui.group.GroupPanel;
 import feiqq.ui.recent.RecentPanel;
 import feiqq.util.Constants;
 import feiqq.util.PictureUtil;
+import feiqq.util.StringUtil;
 
 /**
  * 
@@ -56,6 +61,9 @@ public class MainWindow extends JDialog {
 	private JPanel userInfo;
 	/** 搜索框面板 */
 	private JPanel searchInfo;
+	
+	private JTextField signTextField;
+	private JTextField nickNameTextField;
 	
 	/** 标记（左上角） */
 	private JLabel productInfo;
@@ -120,7 +128,7 @@ public class MainWindow extends JDialog {
 //			//模拟QQ任务栏无图标而系统托盘有，Jframe搞死搞残搞不出来，这个自带属性，哈哈
 			//TODO 高兴的太早，jwindow竟然获得不了系统焦点，我嘞个去
 			setSize(300, 649);
-			setAlwaysOnTop(true);
+			//setAlwaysOnTop(true);
 			setUndecorated(true);
 //			TODO 这个API导致输入中文白屏
 //			不知道是不是jdk版本太高的问题，之前用1.6.45的好像没出现过这种问题
@@ -170,6 +178,12 @@ public class MainWindow extends JDialog {
 			signature.setText(user.getSignature());
 			signature.setToolTipText(user.getSignature());
 			signature.setBounds(80, 59, 156, 32);
+			
+			signTextField = new JTextField();
+			baseInfo.add(signTextField);
+			signTextField.setText(user.getSignature());
+			signTextField.setBounds(80, 59, 156, 32);
+			signTextField.setVisible(false);
 		
 			skinButton = new JLabel();
 			baseInfo.add(skinButton);
@@ -317,6 +331,18 @@ public class MainWindow extends JDialog {
 			public void mouseEntered(MouseEvent e) {
 				picture.setBorder(Constants.ORANGE_BORDER);
 			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if (null == client.getChangeInfoWindow()) {					
+					ChangeInfoWindow changeInfoWindow = ChangeInfoWindow.getInstance(client);
+					client.setChangeInfoWindow(changeInfoWindow);
+					
+				} else {
+					//MyOptionPane.showMessageDialog(client.getMain(), "窗口重复打开不太好哦！", "友情提示");
+					client.getChangeInfoWindow().requestFocus();
+				}
+				
+			}
 		});
 		// 换肤按钮事件
 		skinButton.addMouseListener(new MouseAdapter() {
@@ -330,9 +356,49 @@ public class MainWindow extends JDialog {
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				//AddFriendWindow addFriendWindow = AddFriendWindow.getInstance(client, user.getId(), user);
-				//client.setAddRriend(addFriendWindow);
+				if (null == client.getChangeInfoWindow()) {					
+					ChangeInfoWindow changeInfoWindow = ChangeInfoWindow.getInstance(client);
+					client.setChangeInfoWindow(changeInfoWindow);
+					
+				} else {
+					//MyOptionPane.showMessageDialog(client.getMain(), "窗口重复打开不太好哦！", "友情提示");
+					client.getChangeInfoWindow().requestFocus();
+				}
+			}
+		});
+		//test
+		
+		signature.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
+					signature.setVisible(false);
+					signTextField.setVisible(true);
+					
+				}
+			}
+		});
+		
+		//键盘事件
+		signTextField.addKeyListener(new KeyAdapter() {
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(!signature.getText().equals(signTextField.getTreeLock())) {
+					String str = signTextField.getText() + Constants.LEFT_SLASH + client.getUser().getId();
+					client.sendMsg(new Message(Constants.CHANGE_SIGNINFO, str));
+				}
 				
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					signature.setText(signTextField.getText());
+					signature.setVisible(true);
+					signTextField.setVisible(false);
+				}
 			}
 		});
 		// 最小化按钮事件

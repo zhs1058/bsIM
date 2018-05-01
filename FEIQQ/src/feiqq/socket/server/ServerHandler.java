@@ -250,6 +250,83 @@ public class ServerHandler implements ChannelInboundHandler {
 			backMsg.setPalindType(Constants.REGISTER_MSG);
 			sendMsg(channel, backMsg);
 		}
+		//修改个性签名
+		if(null != message && Constants.CHANGE_SIGNINFO.equals(message.getType())) {
+			String msgs[] = message.getContent().split(Constants.LEFT_SLASH);
+			userDao.updateSign(msgs[0], msgs[1]);
+			
+		}
+		//修改密码
+		if(null != message && Constants.CHANGE_PASSWORD.equals(message.getType())) {
+			Message backMsg = new Message();
+			backMsg.setType(Constants.PALIND_MSG);
+			backMsg.setPalindType(Constants.ECHO_CHANGE_PASSWORD);
+			String msgs[] = message.getContent().split(Constants.LEFT_SLASH);
+			String password = userDao.getPasswordById(msgs[2]);
+			if(msgs[0].equals(password)) {
+				userDao.updatePassword(msgs[1], msgs[2]);
+				backMsg.setStatus(Constants.SUCCESS);
+			}else {
+				backMsg.setStatus(Constants.FAILURE);
+			}
+			sendMsg(channel, backMsg);
+			
+		}
+		//修改个人信息
+		if(null != message && Constants.CHANGE_INFO.equals(message.getType())) {
+			boolean flag = false;
+			Message backMsg = new Message();
+			backMsg.setType(Constants.PALIND_MSG);
+			String msgs[] = message.getContent().split(Constants.LEFT_SLASH);
+			System.out.println(msgs[0]);
+			System.out.println(msgs[1]);
+			System.out.println(msgs[2]);
+			System.out.println(msgs[3]);
+			User user = userDao.getById(msgs[3]);
+			if(!user.getNickName().equals(msgs[0])) {
+				System.out.println("执行到这里 ，昵称被修改");
+				if(userDao.getByNickName(msgs[0]) != null) {
+					System.out.println("执行到这里 ，昵称已经重复");
+					backMsg.setPalindType(Constants.ECHO_CHANGE_INFO_FAILURE);
+					backMsg.setStatus(Constants.FAILURE);
+					sendMsg(channel, backMsg);
+				}else {
+					System.out.println("执行到这里 ，昵称被修改但是未重复");
+					if(msgs[1].equals("***********")) {
+						flag = userDao.updateUser(msgs[0], msgs[2], msgs[3]);
+						backMsg.setPalindType(Constants.ECHO_CHANGE_INFO_WITHOUT_PASSWORD);
+					}else {
+						flag = userDao.updateUser(msgs[0], msgs[1], msgs[2], msgs[3]);
+						backMsg.setPalindType(Constants.ECHO_CHANGE_INFO_WITH_PASSWORD);
+					}
+					if(flag) {
+						backMsg.setStatus(Constants.SUCCESS);
+					}else {
+						backMsg.setStatus(Constants.FAILURE);
+					}
+					sendMsg(channel, backMsg);
+				}
+			}else {
+				System.out.println("执行到这里 ，昵称未被修改");
+				if(msgs[1].equals("***********")) {
+					System.out.println("执行到这里 ，面膜未被修改");
+					flag = userDao.updateUser(msgs[0], msgs[2], msgs[3]);
+					backMsg.setPalindType(Constants.ECHO_CHANGE_INFO_WITHOUT_PASSWORD);
+				}else {
+					System.out.println("执行到这里 ，密码被修改");
+					flag = userDao.updateUser(msgs[0], msgs[1], msgs[2], msgs[3]);
+					backMsg.setPalindType(Constants.ECHO_CHANGE_INFO_WITH_PASSWORD);
+				}
+				if(flag) {
+					backMsg.setStatus(Constants.SUCCESS);
+				}else {
+					backMsg.setStatus(Constants.FAILURE);
+				}
+				sendMsg(channel, backMsg);
+			}
+			
+			
+		}
 		// 修改
 		if (null != message && Constants.INFO_MSG.equals(message.getType())) {
 			Message backMsg = update(message, channel);
@@ -434,9 +511,7 @@ public class ServerHandler implements ChannelInboundHandler {
 				backMsg.setSenderId(groupId);
 				backMsg.setStatus(Constants.SUCCESS);
 				sendMsg(channel, backMsg);
-				
 			}
-			
 		}
 		// 删除成员
 		if (null != message && Constants.DELETE_USER_MEMBER_MSG.equals(message.getType())) {

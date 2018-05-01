@@ -171,6 +171,41 @@ public class ClientHandler implements ChannelInboundHandler {
 					MyOptionPane.showMessageDialog(client.getMain(), "创建群聊失败", "友情提示");
 				}
 			}
+			//回应修改密码
+			if(Constants.ECHO_CHANGE_PASSWORD.equals(message.getPalindType())) {
+				if(Constants.SUCCESS.equals(message.getStatus())) {
+					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改密码成功!", "友情提示");
+				}else {
+					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改密码失败!", "友情提示");
+				}
+			}
+			//回应修改个人信息未修改密码
+			if(Constants.ECHO_CHANGE_INFO_WITHOUT_PASSWORD.equals(message.getPalindType())) {
+				if(message.getStatus().equals(Constants.SUCCESS)) {
+					client.getChangeInfoWindow().infoStaitc = Constants.SUCCESS;
+					Constants.changeInformationStatic = Constants.SUCCESS;
+					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改个人信息成功!", "友情提示");
+					
+				}else {
+					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改个人信息失败!", "友情提示");
+					//client.setChangeInfoStatic(Constants.FAILURE);
+				}
+			}
+			//回应修改个人信息已修改密码
+			if(Constants.ECHO_CHANGE_INFO_WITH_PASSWORD.equals(message.getPalindType())) {
+				if(message.getStatus().equals(Constants.SUCCESS)) {
+					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改个人信息成功,下次登陆请使用新密码！", "友情提示");
+					//client.setChangeInfoStatic(Constants.SUCCESS);
+				}else {
+					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改个人信息失败!", "友情提示");
+					//client.setChangeInfoStatic(Constants.FAILURE);
+				}
+			}
+			//回应修改个人信息失败
+			if(Constants.ECHO_CHANGE_INFO_FAILURE.equals(message.getPalindType())) {
+				MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "该昵称被占用", "友情提示");
+				//client.setChangeInfoStatic(Constants.FAILURE);
+			}
 //			if (Constants.GENRAL_MSG.equals(message.getPalindType()) 
 //					|| Constants.SHAKE_MSG.equals(message.getPalindType())) {
 //				MyOptionPane.showMessageDialog(client.getRoom(), message.getContent(), "友情提示");

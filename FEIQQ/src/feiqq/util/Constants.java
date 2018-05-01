@@ -73,6 +73,24 @@ public class Constants {
 	public static String CREATE_GROUP = "28";
 	/** 回应创建群聊*/
 	public static String ECHO_CREATE_GROUP = "29";
+	/** 修改个人信息*/
+	public static String CHANGE_INFO = "30";
+	/** 回应修改个人信息(修改密码) */
+	public static String ECHO_CHANGE_INFO_WITH_PASSWORD = "31";
+	/** 回应修改个人信息(未修改密码) */
+	public static String ECHO_CHANGE_INFO_WITHOUT_PASSWORD = "32";
+	/** 回应修改个人信息失败 */
+	public static String ECHO_CHANGE_INFO_FAILURE = "33";
+	
+	/** 修改个性签名 */
+	public static String CHANGE_SIGNINFO = "34";
+	/** 回应修改个人信息 */
+	public static String ECHO_CHANGE_SIGNINFO = "35";
+	
+	/** 修改密码 */
+	public static String CHANGE_PASSWORD = "36";
+	/** 回应修改密码 */
+	public static String ECHO_CHANGE_PASSWORD = "37";
 
 	public static String USER = "user";
 	public static String GROUP = "group";
@@ -104,4 +122,5 @@ public class Constants {
 
 	public static int NO_OPTION = 1;
 	public static int YES_OPTION = 0;
+	public static String changeInformationStatic = null;
 }

@@ -7,6 +7,7 @@ import feiqq.bean.User;
 import feiqq.ui.common.CategoryNode;
 import feiqq.ui.frame.AddFriendWindow;
 import feiqq.ui.frame.AddGroupWindow;
+import feiqq.ui.frame.ChangeInfoWindow;
 import feiqq.ui.frame.ChatRoom;
 import feiqq.ui.frame.ChatRoomPanel;
 import feiqq.ui.frame.CreateGroupWindow;
@@ -68,6 +69,8 @@ public class Client {
 	private AddGroupWindow addGroupWindow;
 	/** 创建群聊框 */
 	private CreateGroupWindow createGroupWindow;
+	/** 修改信息框 */
+	private ChangeInfoWindow changeInfoWindow;
 	/** 聊天室 */
 	private ChatRoom room;
 	/** 系统托盘 */
@@ -345,6 +348,16 @@ public class Client {
 	public void setRecentPanel(RecentPanel recentPanel) {
 		this.recentPanel = recentPanel;
 	}
+
+	public ChangeInfoWindow getChangeInfoWindow() {
+		return changeInfoWindow;
+	}
+
+	public void setChangeInfoWindow(ChangeInfoWindow changeInfoWindow) {
+		this.changeInfoWindow = changeInfoWindow;
+	}
+
+	
 	
 	
 	

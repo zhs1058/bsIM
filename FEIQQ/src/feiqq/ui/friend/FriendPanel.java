@@ -64,7 +64,6 @@ public class FriendPanel extends JPanel {
 	public FriendPanel(Client client) {
 		this.selfClient = client;
 		setLayout(new BorderLayout());
-		
 		root = new DefaultMutableTreeNode();
 		model = new DefaultTreeModel(root);
 		selfClient.setBuddyRoot(root);// 放到client核心类，添加分组用到

@@ -1,5 +1,6 @@
 package feiqq.thread;
 
+import java.awt.Color;
 import java.awt.TrayIcon;
 
 import javax.swing.ImageIcon;
@@ -10,6 +11,7 @@ import feiqq.socket.client.Client;
 import feiqq.ui.common.CategoryNode;
 import feiqq.ui.friend.FriendNode;
 import feiqq.ui.group.GroupNode;
+import feiqq.ui.recent.RecentNode;
 import feiqq.util.PictureUtil;
 
 public class FlashThread extends Thread {
@@ -29,7 +31,9 @@ public class FlashThread extends Thread {
 			CategoryNode parentNode = null;
 			String parentName = null;
 			DefaultTreeModel treeModel = null;
+			DefaultTreeModel recentTreeModel = client.getRecentModel();
 			GroupNode gNode = null;
+			RecentNode rNode = client.recentNodeMap.get(senderName);
 			FriendNode node = client.buddyNodeMap.get(senderName);
 			if(node == null) {
 				treeModel = client.getBuddyModel();
@@ -54,23 +58,39 @@ public class FlashThread extends Thread {
 					if(node != null) {
 						node.picture.setBounds(9, 5, 40, 43);
 						icon.setImage(new ImageIcon("").getImage());
+						if(rNode != null) {
+							rNode.picture.setBounds(9, 5, 40, 43);
+						}
 						Thread.sleep(600);
 						treeModel.reload(node);
+						treeModel.reload(parentNode);
 						
 						node.picture.setBounds(8, 4, 39, 42);
 						icon.setImage(PictureUtil.getPicture("qq_icon.png").getImage());
+						if(rNode != null) {
+							rNode.picture.setBounds(8, 4, 39, 42);
+						}
 						Thread.sleep(600);
 						treeModel.reload(node);
+						treeModel.reload(parentNode);
 					}else {
 						gNode.picture.setBounds(1, 1, 41, 41);
 						icon.setImage(new ImageIcon("").getImage());
+						if(rNode != null) {
+							rNode.picture.setBounds(9, 5, 40, 43);
+						}
 						Thread.sleep(600);
 						treeModel.reload(gNode);
+						treeModel.reload(parentNode);
 						
 						gNode.picture.setBounds(0, 0, 40, 40);
 						icon.setImage(PictureUtil.getPicture("qq_icon.png").getImage());
+						if(rNode != null) {
+							rNode.picture.setBounds(8, 4, 39, 42);
+						}
 						Thread.sleep(600);
 						treeModel.reload(gNode);
+						treeModel.reload(parentNode);
 					}
 					
 				} else {

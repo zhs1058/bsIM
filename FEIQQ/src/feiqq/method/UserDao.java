@@ -45,6 +45,42 @@ public class UserDao extends BaseDao {
 		}
 		return null;
 	}
+	/*
+	 * 修改信息有密码
+	 */
+	public boolean updateUser(String nick, String pass, String sign, String id) {
+		String sql = "update fqq_user set nick_name = '" + nick + "', user_password = '" + pass + "' , user_signature = '" + sign + "' "
+				+ "where id = '" + Integer.parseInt(id) + "'";
+		int num = operate(sql);
+		if(num > 0) return true;
+		return false;
+	}
+	
+	public void updatePassword(String password, String id) {
+		String sql = "update fqq_user set user_password = '" + password + "' "
+				+ "where id = '" + Integer.parseInt(id) + "'";
+		operate(sql);
+	}
+	
+	/*
+	 * 修改信息无密码
+	 */
+	public boolean updateUser(String nick, String sign, String id) {
+		String sql = "update fqq_user set nick_name = '" + nick + "' " + ",user_signature = '" + sign + "' "
+				+ "where id = '" + Integer.parseInt(id) + "'";
+		int num = operate(sql);
+		if(num > 0) return true;
+		return false;
+	}
+	
+	/*
+	 * 更新个性签名
+	 */
+	public void updateSign(String sign , String id) {
+		String sql = "update fqq_user set user_signature = '" + sign + "' "
+				+ "where id = '" + Integer.parseInt(id) + "'";
+		operate(sql);
+	}
 	
 	/**
 	 * getById: 通过ID查询	<br/>
@@ -57,6 +93,19 @@ public class UserDao extends BaseDao {
 		String sql = "select * from fqq_user fu where fu.id = " + Integer.valueOf(id);
 		ResultSet result = select(sql);
 		return assembleUser(result);
+	}
+	
+	public String getPasswordById(String id) {
+		String sql = "select * from fqq_user fu where fu.id = " + Integer.valueOf(id);
+		ResultSet result = select(sql);
+		try {
+			if(result != null && result.next()) {
+				return result.getString("user_password");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	/**

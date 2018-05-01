@@ -270,7 +270,6 @@ public class RegisterWindow  extends JDialog {
 					MyOptionPane.showMessageDialog(client.getRegister(), "验证码发送成功！", "友情提示");
 					return;
 				} catch (MessagingException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				

@@ -291,15 +291,15 @@ public class RecentPanel extends JPanel {
 			RecentNode recentNode = new RecentNode(PictureUtil.getPicture("avatar2.png"), user);
 			root.add(recentNode);
 			model.reload();	
-			selfClient.recentNodeMap.put(user.getId(), recentNode);
+			selfClient.recentNodeMap.put(user.getNickName(), recentNode);
 		}
 	}
 	public void loadTree(Group group) {
 		if(!selfClient.recentNodeMap.containsKey(group.getId())) {
-			RecentNode recentNode = new RecentNode(PictureUtil.getPicture("avatar2.png"), group);
+			RecentNode recentNode = new RecentNode(PictureUtil.getPicture("group1.png"), group);
 			root.add(recentNode);
 			model.reload();	
-			selfClient.recentNodeMap.put(group.getId(), recentNode);
+			selfClient.recentNodeMap.put(group.getName(), recentNode);
 		}
 	}
 	
