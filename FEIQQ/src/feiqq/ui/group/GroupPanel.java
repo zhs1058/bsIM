@@ -283,7 +283,7 @@ public class GroupPanel extends JPanel {
 										AddGroupWindow inst = AddGroupWindow.getInstance(selfClient, selfClient.getUser());
 										selfClient.setAddGroupWindow(inst);
 									} else {
-										MyOptionPane.showMessageDialog(selfClient.getAddRriend(), "窗口重复打开不太好！", "友情提示");
+										MyOptionPane.showMessageDialog(selfClient.getAddRriend(), "窗口重复打开不太好！", "友情提示", Constants.NOTICE);
 										selfClient.getAddRriend().requestFocus();
 									}
 								}
@@ -297,7 +297,7 @@ public class GroupPanel extends JPanel {
 										CreateGroupWindow inst = CreateGroupWindow.getInstance(selfClient, selfClient.getUser());
 										selfClient.setCreateGroupWindow(inst);
 									} else {
-										MyOptionPane.showMessageDialog(selfClient.getAddRriend(), "窗口重复打开不太好！", "友情提示");
+										MyOptionPane.showMessageDialog(selfClient.getAddRriend(), "窗口重复打开不太好！", "友情提示", Constants.NOTICE);
 										selfClient.getAddRriend().requestFocus();
 									}
 								}

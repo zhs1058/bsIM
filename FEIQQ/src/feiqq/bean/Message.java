@@ -67,6 +67,9 @@ public class Message {
 	public Message() {
 		// TODO Auto-generated constructor stub
 	}
+	public Message(String type) {
+		this.type = type;
+	}
 
 	public Message(String type, String content) {
 		this.type = type;

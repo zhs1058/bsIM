@@ -14,6 +14,16 @@ import javax.mail.internet.MimeMessage;
 
 public class MailUtil {
 	public static void sendMail(String toM, String code) throws MessagingException {
+		String title = "验证码";
+		String content = "<h1>【毕设IM】您的验证码为：</h1><h3>" + code + "</h3><h2>如果不是您本人操作，请忽略本邮件</h2>";
+		createMail(title, toM, content);
+	}
+	public static void sendPassMail(String toM, String pass) throws MessagingException {
+		String title = "密码找回";
+		String content = "<h1>【毕设IM】您的密码为：</h1><h3>" + pass + "</h3><h2>请登陆后，及时修改您的密码</h2>";
+		createMail(title, toM, content);
+	}
+	private static void createMail(String title, String toM, String content) throws MessagingException {
 		// 创建Properties 类用于记录邮箱的一些属性
         Properties props = new Properties();
         // 表示SMTP发送邮件，必须进行身份验证
@@ -58,10 +68,10 @@ public class MailUtil {
         message.setRecipient(RecipientType.TO, toMail);
 
         // 设置邮件标题
-        message.setSubject("验证码");
+        message.setSubject(title);
 
         // 设置邮件的内容体
-        message.setContent("<h1>【毕设IM】您的验证码为：</h1><h3>" + code + "</h3><h2>如果不是您本人操作，请忽略本邮件</h2>", "text/html;charset=UTF-8");
+        message.setContent(content, "text/html;charset=UTF-8");
 
         // 最后当然就是发送邮件啦
         Transport.send(message);

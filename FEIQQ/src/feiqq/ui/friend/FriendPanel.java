@@ -404,7 +404,7 @@ public class FriendPanel extends JPanel {
 								public void actionPerformed(ActionEvent e) {
 									Category cate = ((CategoryNode)object).category;
 									if (cate.getName().equals(Constants.DEFAULT_CATE)) {
-										MyOptionPane.showMessageDialog(selfClient.getMain(), "默认分组不允许删除！", "友情提示");
+										MyOptionPane.showMessageDialog(selfClient.getMain(), "默认分组不允许删除！", "友情提示", Constants.NOTICE);
 										return;
 									}
 									int res = MyOptionPane.showConfirmDialog(selfClient.getMain(), 
@@ -430,7 +430,7 @@ public class FriendPanel extends JPanel {
 										AddFriendWindow inst = AddFriendWindow.getInstance(selfClient, ((CategoryNode)object).category.getId(), selfClient.getUser());
 										selfClient.setAddRriend(inst);
 									} else {
-										MyOptionPane.showMessageDialog(selfClient.getAddRriend(), "窗口重复打开不太好！", "友情提示");
+										MyOptionPane.showMessageDialog(selfClient.getAddRriend(), "窗口重复打开不太好！", "友情提示", Constants.NOTICE);
 										selfClient.getAddRriend().requestFocus();
 									}
 								}
@@ -441,7 +441,7 @@ public class FriendPanel extends JPanel {
 								public void actionPerformed(ActionEvent e) {
 									CategoryNode cateNode = (CategoryNode) object;
 									if (cateNode.category.getName().equals(Constants.DEFAULT_CATE)) {
-										MyOptionPane.showMessageDialog(selfClient.getMain(), "默认分组不允许重命名！", "友情提示");
+										MyOptionPane.showMessageDialog(selfClient.getMain(), "默认分组不允许重命名！", "友情提示", Constants.NOTICE);
 										return;
 									}
 									jTree.setEditable(true);

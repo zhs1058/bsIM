@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+
 import feiqq.bean.Category;
 import feiqq.bean.Group;
 import feiqq.bean.CateMember;
@@ -20,6 +22,7 @@ import feiqq.method.CateMemberDao;
 import feiqq.method.UserDao;
 import feiqq.util.Constants;
 import feiqq.util.JsonUtil;
+import feiqq.util.MailUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
@@ -157,6 +160,24 @@ public class ServerHandler implements ChannelInboundHandler {
 				}
 			}
 			offLineDao.deleteMessage(user.getId());
+		}
+		//找回密码
+		if(null != message && Constants.FIND_PASSWORD.equals(message.getType())) {
+			Message backMsg = new Message();
+			backMsg.setType(Constants.PALIND_MSG);
+			backMsg.setPalindType(Constants.ECHO_FIND_PASSWORD);
+			String passWord = userDao.findPassWordByUserName(message.getContent());
+			try {
+				MailUtil.sendPassMail(message.getContent(), passWord);
+				backMsg.setStatus(Constants.SUCCESS);
+			} catch (MessagingException e) {
+				backMsg.setStatus(Constants.FAILURE);
+				e.printStackTrace();
+			} finally {
+				sendMsg(channel, backMsg);
+			}
+			
+			
 		}
 		// TODO 现在的场景还不需要
 		if (null != message && Constants.EXIT_MSG.equals(message.getType())) {

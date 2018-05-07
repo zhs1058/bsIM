@@ -17,8 +17,8 @@ public class UserDao extends BaseDao {
 	 * @since JDK 1.7
 	 */
 	public User login(String name, String pass) {
-		String sql = "select * from fqq_user fu where fu.user_name = "+
-				Integer.valueOf(name)+" and fu.user_password = '"+pass+"'";
+		String sql = "select * from fqq_user fu where fu.user_name = '"+
+				name+"' and fu.user_password = '"+pass+"'";
 		ResultSet result = select(sql);
 		return assembleUser(result);
 	}
@@ -34,7 +34,7 @@ public class UserDao extends BaseDao {
 	 * @since JDK 1.7
 	 */
 	public User saveUser(String nick, String name, String pass, String sign) {
-		String sql = "insert into fqq_user (nick_name , user_name , user_password , user_signature ) values('"+nick+"',"+name+",'"+pass+"' ";
+		String sql = "insert into fqq_user (nick_name , user_name , user_password , user_signature ) values('"+nick+"','"+name+"','"+pass+"' ";
 		if (!StringUtil.isEmpty(sign)) {
 			sql += " ,'"+sign+"' ";
 		}
@@ -116,7 +116,7 @@ public class UserDao extends BaseDao {
 	 * @since JDK 1.7
 	 */
 	public User getByUserName(String value) {
-		String sql = "select * from fqq_user fu where fu.user_name = " + Integer.valueOf(value);
+		String sql = "select * from fqq_user fu where fu.user_name = '" + value + "'";
 		ResultSet result = select(sql);
 		return assembleUser(result);
 	}
@@ -155,6 +155,24 @@ public class UserDao extends BaseDao {
 	public int deleteUser(String id) {
 		String sql = "delete from fqq_user where id = " + Integer.valueOf(id);
 		return operate(sql);
+	}
+	
+	/*
+	 * 通过用户名查找密码
+	 */
+	public String findPassWordByUserName(String userName) {
+		String passWord = null;
+		String sql  = "select * from fqq_user where user_name = '" + userName + "'";
+		ResultSet result = select(sql);
+		try {
+			if(null != result && result.next()) {
+				passWord = result.getString("user_password");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return passWord;
 	}
 	
 	// 组装User对象

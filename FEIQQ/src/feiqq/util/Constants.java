@@ -91,11 +91,17 @@ public class Constants {
 	public static String CHANGE_PASSWORD = "36";
 	/** 回应修改密码 */
 	public static String ECHO_CHANGE_PASSWORD = "37";
+	
+	/** 找回密码 */
+	public static String FIND_PASSWORD = "38";
+	/** 回应找回密码 */
+	public static String ECHO_FIND_PASSWORD = "39";
 
 	public static String USER = "user";
 	public static String GROUP = "group";
 	public static String SUCCESS = "success";
 	public static String FAILURE = "failure";
+	public static String NOTICE = "notice";
 	public static String YES = "yes";
 	public static String NO = "no";
 

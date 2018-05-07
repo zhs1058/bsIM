@@ -387,7 +387,7 @@ public class ChatRoomPanel extends JPanel {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					// 发送消息
 					if (StringUtil.isEmpty(msg)) {
-						MyOptionPane.showMessageDialog(client.getRoom(), "发送内容不能为空，请重新输入！", "友情提示");
+						MyOptionPane.showMessageDialog(client.getRoom(), "发送内容不能为空，请重新输入！", "友情提示", Constants.NOTICE);
 					} else {
 						sendMsg(true);
 					}
@@ -400,7 +400,7 @@ public class ChatRoomPanel extends JPanel {
 			public void mouseReleased(MouseEvent e) {
 				// 发送消息
 				if (StringUtil.isEmpty(inputTextPane.getText())) {
-					MyOptionPane.showMessageDialog(client.getRoom(), "发送内容不能为空，请重新输入！", "友情提示");
+					MyOptionPane.showMessageDialog(client.getRoom(), "发送内容不能为空，请重新输入！", "友情提示", Constants.NOTICE);
 				} else {
 					sendMsg(false);
 				}

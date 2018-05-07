@@ -11,6 +11,7 @@ import feiqq.ui.frame.ChangeInfoWindow;
 import feiqq.ui.frame.ChatRoom;
 import feiqq.ui.frame.ChatRoomPanel;
 import feiqq.ui.frame.CreateGroupWindow;
+import feiqq.ui.frame.FindPasswordWindow;
 import feiqq.ui.frame.LoginWindow;
 import feiqq.ui.frame.MainWindow;
 import feiqq.ui.frame.RegisterWindow;
@@ -71,6 +72,8 @@ public class Client {
 	private CreateGroupWindow createGroupWindow;
 	/** 修改信息框 */
 	private ChangeInfoWindow changeInfoWindow;
+	/** 找回密码框*/
+	private FindPasswordWindow findPasswordWindow;
 	/** 聊天室 */
 	private ChatRoom room;
 	/** 系统托盘 */
@@ -357,13 +360,16 @@ public class Client {
 		this.changeInfoWindow = changeInfoWindow;
 	}
 
+	public FindPasswordWindow getFindPasswordWindow() {
+		return findPasswordWindow;
+	}
+
+	public void setFindPasswordWindow(FindPasswordWindow findPasswordWindow) {
+		this.findPasswordWindow = findPasswordWindow;
+	}
+
 	
-	
-	
-	
-	
-	
-	
+
 	
 
 }

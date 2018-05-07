@@ -12,6 +12,7 @@ import feiqq.ui.common.MyOptionPane;
 import feiqq.ui.common.MyTabComponent;
 import feiqq.ui.frame.ChatRoom;
 import feiqq.ui.frame.ChatRoomPanel;
+import feiqq.ui.frame.LoginWindow;
 import feiqq.ui.frame.MainWindow;
 import feiqq.ui.friend.FriendNode;
 import feiqq.ui.group.GroupNode;
@@ -84,26 +85,26 @@ public class ClientHandler implements ChannelInboundHandler {
 					MainWindow inst = MainWindow.getInstance(client);
 					client.setMain(inst);
 				} else {
-					MyOptionPane.showMessageDialog(client.getLogin(), message.getContent(), "友情提示");
+					MyOptionPane.showMessageDialog(client.getLogin(), message.getContent(), "友情提示", Constants.FAILURE);
 				}
 			}
 			if (Constants.REGISTER_MSG.equals(message.getPalindType())) {
 				if (Constants.SUCCESS.equals(message.getContent())) {
-					MyOptionPane.showMessageDialog(client.getRegister(), "注册成功！", "友情提示");
+					MyOptionPane.showMessageDialog(client.getRegister(), "注册成功！", "友情提示", Constants.SUCCESS);
 					client.getRegister().dispose();
 					client.setRegister(null);
 				} else {
-					MyOptionPane.showMessageDialog(client.getRegister(), message.getContent(), "友情提示");
+					MyOptionPane.showMessageDialog(client.getRegister(), message.getContent(), "友情提示", Constants.FAILURE);
 				}
 			}
 			if (Constants.REQUEST_ADD_MSG.equals(message.getPalindType())) {
 				if (Constants.SUCCESS.equals(message.getStatus())) {
 					if (null != client.getAddRriend()) {
-						MyOptionPane.showMessageDialog(client.getAddRriend(), message.getSenderName()+"同意了您的好友请求！","友情提示");
+						MyOptionPane.showMessageDialog(client.getAddRriend(), message.getSenderName()+"同意了您的好友请求！","友情提示", Constants.SUCCESS);
 						client.getAddRriend().dispose();
 						client.setAddRriend(null);
 					} else {
-						MyOptionPane.showMessageDialog(client.getMain(), message.getSenderName()+"同意了您的好友请求！", "友情提示");
+						MyOptionPane.showMessageDialog(client.getMain(), message.getSenderName()+"同意了您的好友请求！", "友情提示", Constants.SUCCESS);
 					}
 					// 将数据更新到最新
 					client.setUser(message.getUser());
@@ -119,7 +120,7 @@ public class ClientHandler implements ChannelInboundHandler {
 					client.getBuddyModel().reload(client.getBuddyRoot());
 					client.buddyNodeMap.put(message.getFriend().getNickName(), friendNode);
 				} else {
-					MyOptionPane.showMessageDialog(client.getAddRriend(), message.getContent(), "友情提示");
+					MyOptionPane.showMessageDialog(client.getAddRriend(), message.getContent(), "友情提示", Constants.FAILURE);
 					if (!Constants.FAILURE.equals(message.getStatus())) {
 						if (null != client.getAddRriend()) {
 							client.getAddRriend().dispose();
@@ -138,7 +139,7 @@ public class ClientHandler implements ChannelInboundHandler {
 					client.buddyNodeMap.put(message.getFriend().getNickName(), friendNode);
 				}
 				if (Constants.FAILURE.equals(message.getStatus())) {
-					MyOptionPane.showMessageDialog(client.getMain(), message.getContent(), "友情提示");
+					MyOptionPane.showMessageDialog(client.getMain(), message.getContent(), "友情提示", Constants.FAILURE);
 				}
 			}
 			//回应添加群聊
@@ -150,10 +151,10 @@ public class ClientHandler implements ChannelInboundHandler {
 					rootNode.add(groupNode);
 					client.getGroupModel().reload(rootNode);
 					client.groupNodeMap.put(message.getSenderName(), groupNode);
-					MyOptionPane.showMessageDialog(client.getMain(), "添加群聊成功", "友情提示");
+					MyOptionPane.showMessageDialog(client.getMain(), "添加群聊成功", "友情提示", Constants.SUCCESS);
 				}
 				if(Constants.FAILURE.equals(message.getStatus())){
-					MyOptionPane.showMessageDialog(client.getMain(), "添加群聊失败", "友情提示");
+					MyOptionPane.showMessageDialog(client.getMain(), "添加群聊失败", "友情提示", Constants.FAILURE);
 				}
 			}
 			//回应创建群聊
@@ -165,18 +166,37 @@ public class ClientHandler implements ChannelInboundHandler {
 					rootNode.add(groupNode);
 					client.getGroupModel().reload(rootNode);
 					client.groupNodeMap.put(message.getSenderName(), groupNode);
-					MyOptionPane.showMessageDialog(client.getMain(), "创建群聊成功", "友情提示");
+					MyOptionPane.showMessageDialog(client.getMain(), "创建群聊成功", "友情提示", Constants.SUCCESS);
 				}
 				if(Constants.FAILURE.equals(message.getStatus())){
-					MyOptionPane.showMessageDialog(client.getMain(), "创建群聊失败", "友情提示");
+					MyOptionPane.showMessageDialog(client.getMain(), "创建群聊失败", "友情提示", Constants.FAILURE);
+				}
+			}
+			//回应查找密码
+			if(Constants.ECHO_FIND_PASSWORD.equals(message.getPalindType())) {
+				if(Constants.SUCCESS.equals(message.getStatus())) {
+					MyOptionPane.showMessageDialog(client.getMain(), "查找密码成功", "友情提示", Constants.SUCCESS);
+					client.getFindPasswordWindow().dispose();
+					client.setFindPasswordWindow(null);
+				}else {
+					MyOptionPane.showMessageDialog(client.getMain(), "查找密码失败", "友情提示", Constants.FAILURE);
 				}
 			}
 			//回应修改密码
 			if(Constants.ECHO_CHANGE_PASSWORD.equals(message.getPalindType())) {
 				if(Constants.SUCCESS.equals(message.getStatus())) {
-					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改密码成功!", "友情提示");
+					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改密码成功,请重新登陆!", "友情提示", Constants.SUCCESS);
+					client.getChangeInfoWindow().dispose();
+					client.setChangeInfoWindow(null);
+					client.getMain().dispose();
+					client.getMain().delIcon();
+					client.setMain(null);
+					client.sendMsg(new Message(Constants.EXIT_MSG));
+					client = null;
+					Client newClient = new Client();
+					newClient.setLogin(LoginWindow.getInstance(newClient));
 				}else {
-					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改密码失败!", "友情提示");
+					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改密码失败!", "友情提示", Constants.FAILURE);
 				}
 			}
 			//回应修改个人信息未修改密码
@@ -184,26 +204,26 @@ public class ClientHandler implements ChannelInboundHandler {
 				if(message.getStatus().equals(Constants.SUCCESS)) {
 					client.getChangeInfoWindow().infoStaitc = Constants.SUCCESS;
 					Constants.changeInformationStatic = Constants.SUCCESS;
-					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改个人信息成功!", "友情提示");
+					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改个人信息成功!", "友情提示", Constants.SUCCESS);
 					
 				}else {
-					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改个人信息失败!", "友情提示");
+					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改个人信息失败!", "友情提示", Constants.FAILURE);
 					//client.setChangeInfoStatic(Constants.FAILURE);
 				}
 			}
 			//回应修改个人信息已修改密码
 			if(Constants.ECHO_CHANGE_INFO_WITH_PASSWORD.equals(message.getPalindType())) {
 				if(message.getStatus().equals(Constants.SUCCESS)) {
-					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改个人信息成功,下次登陆请使用新密码！", "友情提示");
+					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改个人信息成功,下次登陆请使用新密码！", "友情提示", Constants.SUCCESS);
 					//client.setChangeInfoStatic(Constants.SUCCESS);
 				}else {
-					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改个人信息失败!", "友情提示");
+					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改个人信息失败!", "友情提示", Constants.FAILURE);
 					//client.setChangeInfoStatic(Constants.FAILURE);
 				}
 			}
 			//回应修改个人信息失败
 			if(Constants.ECHO_CHANGE_INFO_FAILURE.equals(message.getPalindType())) {
-				MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "该昵称被占用", "友情提示");
+				MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "该昵称被占用", "友情提示", Constants.NOTICE);
 				//client.setChangeInfoStatic(Constants.FAILURE);
 			}
 //			if (Constants.GENRAL_MSG.equals(message.getPalindType()) 

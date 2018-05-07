@@ -252,22 +252,22 @@ public class RegisterWindow  extends JDialog {
 			public void mouseReleased(MouseEvent e) {
 				String name = userNameField.getText();
 				if (StringUtil.isEmpty(name)) {
-					MyOptionPane.showMessageDialog(client.getRegister(), "没有输入账号！", "友情提示");
+					MyOptionPane.showMessageDialog(client.getRegister(), "没有输入账号！", "友情提示", Constants.NOTICE);
 					return;
 				}
 				if (!ValidateUtil.isMail(name)) {
-					MyOptionPane.showMessageDialog(client.getRegister(), "请检查邮件格式！", "友情提示");
+					MyOptionPane.showMessageDialog(client.getRegister(), "请检查邮件格式！", "友情提示", Constants.NOTICE);
 					return;
 				}
 				if(sendCount > 2) {
-					MyOptionPane.showMessageDialog(client.getRegister(), "验证码不能重复发送超过2次！", "友情提示");
+					MyOptionPane.showMessageDialog(client.getRegister(), "验证码不能重复发送超过2次！", "友情提示", Constants.NOTICE);
 					return;
 				}
 				TestCoding = StringRandomUtil.getStringRandom();
 				try {
 					MailUtil.sendMail(name, TestCoding);
 					sendCount ++ ;
-					MyOptionPane.showMessageDialog(client.getRegister(), "验证码发送成功！", "友情提示");
+					MyOptionPane.showMessageDialog(client.getRegister(), "验证码发送成功！", "友情提示", Constants.SUCCESS);
 					return;
 				} catch (MessagingException e1) {
 					e1.printStackTrace();
@@ -322,10 +322,16 @@ public class RegisterWindow  extends JDialog {
 			@Override
 			public void focusLost(FocusEvent e) {
 				userNameField.setBorder(Constants.LIGHT_GRAY_BORDER);
+				if(userNameField.getText() == null || userNameField.getText().equals("")) {
+					userNameField.setText("电子邮件");
+				}
 			}
 			@Override
 			public void focusGained(FocusEvent e) {
 				userNameField.setBorder(Constants.ORANGE_BORDER);
+				if("电子邮件".equals(userNameField.getText())) {
+					userNameField.setText("");
+				}
 			}
 		});
 		passWordField.addFocusListener(new FocusListener() {
@@ -370,28 +376,28 @@ public class RegisterWindow  extends JDialog {
 		String sign = signatureArea.getText();
 		// 验证
 		if (StringUtil.isEmpty(nick)) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "需要一个帅气的昵称！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getRegister(), "需要一个帅气的昵称！", "友情提示", Constants.NOTICE);
 			return;
 		}
 		if (nick.length() > 10) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "昵称长度不可以超过10位！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getRegister(), "昵称长度不可以超过10位！", "友情提示", Constants.NOTICE);
 			nickNameField.setText(nick.substring(0, 10));
 			return;
 		}
 		if (StringUtil.isEmpty(testCode)) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "没有输入验证码！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getRegister(), "没有输入验证码！", "友情提示", Constants.NOTICE);
 			return;
 		}
 		if (StringUtil.isEmpty(name)) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "没有输入账号！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getRegister(), "没有输入账号！", "友情提示", Constants.NOTICE);
 			return;
 		}
 		if (!ValidateUtil.isMail(name)) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "请检查邮件格式！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getRegister(), "请检查邮件格式！", "友情提示", Constants.NOTICE);
 			return;
 		}
 		if(!TestCoding.equals(testCode)) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "验证码错误，请注意大小写一致！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getRegister(), "验证码错误，请注意大小写一致！", "友情提示", Constants.FAILURE);
 			return;
 		}
 //		if (name.length() > 10) {
@@ -400,25 +406,25 @@ public class RegisterWindow  extends JDialog {
 //			return;
 //		}
 		if (StringUtil.isEmpty(pass)) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "没有输入密码！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getRegister(), "没有输入密码！", "友情提示", Constants.NOTICE);
 			return;
 		}
 		if (pass.length() > 10) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "密码长度不可以超过10位！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getRegister(), "密码长度不可以超过10位！", "友情提示", Constants.NOTICE);
 			passWordField.setText(pass.substring(0, 10));
 			return;
 		}
 		if (StringUtil.isEmpty(rept)) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "还需要确认密码！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getRegister(), "还需要确认密码！", "友情提示", Constants.NOTICE);
 			return;
 		}
 		if (rept.length() > 10) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "确认密码也不可以超过10位！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getRegister(), "确认密码也不可以超过10位！", "友情提示", Constants.NOTICE);
 			repeatPassField.setText(rept.substring(0, 10));
 			return;
 		}
 		if (!StringUtil.isEqual(pass, rept)) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "两次密码输入不一致！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getRegister(), "两次密码输入不一致！", "友情提示", Constants.NOTICE);
 			return;
 		}
 		if (StringUtil.isEmpty(sign)) {
@@ -428,7 +434,7 @@ public class RegisterWindow  extends JDialog {
 			}
 		}
 		if (sign.length() > 50) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "签名长度不可以超过50位！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getRegister(), "签名长度不可以超过50位！", "友情提示", Constants.NOTICE);
 			signatureArea.setText(sign.substring(0, 50));
 			return;
 		}

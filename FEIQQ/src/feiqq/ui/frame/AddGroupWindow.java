@@ -149,7 +149,7 @@ public class AddGroupWindow extends JDialog{
 			public void mouseReleased(MouseEvent e) {
 				String account = textField.getText();
 				if (StringUtil.isEmpty(account)) {
-					MyOptionPane.showMessageDialog(client.getAddRriend(), "请输入群组名称！", "友情提示");
+					MyOptionPane.showMessageDialog(client.getAddRriend(), "请输入群组名称！", "友情提示", Constants.NOTICE);
 					return;
 				}
 				Message message = new Message();

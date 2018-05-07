@@ -34,8 +34,8 @@ public class MyOptionPane {
 	 * @param title 标题
 	 * @param content 内容
 	 */
-	public static void showMessageDialog(Component owner, String content, String title) {
-		JDialog dialog = createMessageDialog(owner, title, content);
+	public static void showMessageDialog(Component owner, String content, String title, String status) {
+		JDialog dialog = createMessageDialog(owner, title, content, status);
 		if (null == owner) {
 			dialog.setLocationRelativeTo(null);
 		} else {
@@ -195,7 +195,7 @@ public class MyOptionPane {
 		return dialog;
 	}
 
-	private static JDialog createMessageDialog(Component owner, String title, String content) {
+	private static JDialog createMessageDialog(Component owner, String title, String content, String status) {
 		final Point point = new Point();
 		
 		final JDialog dialog = getDialog(owner, title);
@@ -207,7 +207,16 @@ public class MyOptionPane {
 		topPane.setLayout(null);
 		dialog.add(topPane);
 		topPane.setBounds(0, 0, 320, 31);
-		topPane.setBackground(Color.CYAN);
+		if(Constants.SUCCESS.equals(status)) {
+			topPane.setBackground(Color.GREEN);
+		}
+		if(Constants.FAILURE.equals(status)) {
+			topPane.setBackground(Color.RED);
+		}
+		if(Constants.NOTICE.equals(status)) {
+			topPane.setBackground(Color.YELLOW);
+		}
+		
 		topPane.setBorder(Constants.LIGHT_GRAY_BORDER);
 
 		final JLabel titleLabel = new JLabel(title);
@@ -222,7 +231,16 @@ public class MyOptionPane {
 
 		JPanel downPane = new JPanel();
 		downPane.setLayout(null);
-		downPane.setBackground(Color.WHITE);
+		if(Constants.SUCCESS.equals(status)) {
+			downPane.setBackground(Color.GREEN);
+		}
+		if(Constants.FAILURE.equals(status)) {
+			downPane.setBackground(Color.RED);
+		}
+		if(Constants.NOTICE.equals(status)) {
+			downPane.setBackground(Color.YELLOW);
+		}
+		
 		dialog.add(downPane);
 		downPane.setBounds(0, 30, 320, 139);
 		downPane.setBorder(Constants.LIGHT_GRAY_BORDER);

@@ -103,7 +103,9 @@ public class MainWindow extends JDialog {
 	private TrayIcon icon;
 	private SystemTray tray;
 	
-	
+	public void delIcon() {
+		tray.remove(icon);
+	}
 	public static MainWindow getInstance(Client client) {
 		MainWindow inst = new MainWindow(client);
 		inst.setLocationRelativeTo(null);

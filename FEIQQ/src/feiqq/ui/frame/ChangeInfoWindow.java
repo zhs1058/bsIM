@@ -255,11 +255,11 @@ public class ChangeInfoWindow extends JDialog {
 		String con = String.valueOf(confirmPassField.getPassword());
 		// 验证
 		if (cur.length() > 10 || con.length() > 10) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "密码长度不可以超过10位！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getRegister(), "密码长度不可以超过10位！", "友情提示", Constants.NOTICE);
 			return;
 		}
 		if (!cur.equals(con)) {
-			MyOptionPane.showMessageDialog(client.getRegister(), "密码前后不一致！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getRegister(), "密码前后不一致！", "友情提示", Constants.NOTICE);
 			return;
 		}
 		String str = pre + Constants.LEFT_SLASH + cur + Constants.LEFT_SLASH + client.getUser().getId();

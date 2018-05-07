@@ -417,6 +417,16 @@ public class LoginWindow extends JDialog {
 				findPassLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 				findPassLabel.setText("<html><u>\u627e\u56de\u5bc6\u7801</u><html>");
 			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (null == client.getFindPasswordWindow()) {					
+					FindPasswordWindow inst = FindPasswordWindow.getInstance(client);
+					client.setFindPasswordWindow(inst);
+				} else {
+					//MyOptionPane.showMessageDialog(client.getLogin(), "窗口重复打开不太好哦！", "友情提示");
+					client.getFindPasswordWindow().requestFocus();
+				}
+			}
 		});
 	}
 	
@@ -425,11 +435,11 @@ public class LoginWindow extends JDialog {
 		String name = userNameField.getText();
 		String pass = String.valueOf(passWordField.getPassword());
 		if (StringUtil.isEmpty(name)) {
-			MyOptionPane.showMessageDialog(client.getLogin(), "请输入账号！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getLogin(), "请输入账号！", "友情提示", Constants.NOTICE);
 			return;
 		}
 		if (StringUtil.isEmpty(pass)) {
-			MyOptionPane.showMessageDialog(client.getLogin(), "请输入密码！", "友情提示");
+			MyOptionPane.showMessageDialog(client.getLogin(), "请输入密码！", "友情提示", Constants.NOTICE);
 			return;
 		}
 		String str = name + Constants.LEFT_SLASH + pass;
