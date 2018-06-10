@@ -96,6 +96,10 @@ public class Constants {
 	public static String FIND_PASSWORD = "38";
 	/** 回应找回密码 */
 	public static String ECHO_FIND_PASSWORD = "39";
+	/** 查询预置信息 */
+	public static String SEARCH_PRESET_INFO = "40";
+	/** 回应查询预置信息 */
+	public static String ECHO_SEARCH_PRESET_INFO = "41";
 
 	public static String USER = "user";
 	public static String GROUP = "group";
@@ -121,6 +125,7 @@ public class Constants {
 	public static Font BASIC_FONT2 = new Font("微软雅黑", Font.TYPE1_FONT, 12);
 	// 楷体
 	public static Font DIALOG_FONT = new Font("楷体", Font.PLAIN, 16);
+	public static Font DIALOG_FONT2 = new Font("楷体", Font.PLAIN, 20);
 	
 	public static Border GRAY_BORDER = BorderFactory.createLineBorder(Color.GRAY);
 	public static Border ORANGE_BORDER = BorderFactory.createLineBorder(Color.ORANGE);

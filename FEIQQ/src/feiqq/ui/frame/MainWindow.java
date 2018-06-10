@@ -209,6 +209,7 @@ public class MainWindow extends JDialog {
 			searchInfo.setOpaque(false);
 			searchInfo.setBounds(0, 117, 300, 32);
 			searchInfo.setBorder(Constants.GRAY_BORDER);
+			searchInfo.setVisible(false);
 			
 			searchText = new JTextField();
 			searchText.setText(Constants.SPACE + Constants.SEARCH_TXT);

@@ -142,8 +142,8 @@ public class UserDao extends BaseDao {
 	 * @since JDK 1.7
 	 */
 	public User getByAccountOrNickName(String value) {
-		String sql = "select * from fqq_user fu where fu.user_name = " +
-				Integer.valueOf(value)+ " or fu.nick_name = '"+value+"' ";
+		String sql = "select * from fqq_user where user_name = '" +
+				value + "' or nick_name = '"+value+"' ";
 		ResultSet result = select(sql);
 		return assembleUser(result);
 	}
@@ -180,7 +180,7 @@ public class UserDao extends BaseDao {
 		try {
 			if (null != result && result.next()) {
 				String id = String.valueOf(result.getInt("id"));
-				String userName = String.valueOf(result.getInt("user_name"));
+				String userName = result.getString("user_name");
 				String nickName = result.getString("nick_name");
 				String signature = result.getString("user_signature");
 				return new User(id, userName, nickName, signature);

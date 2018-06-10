@@ -31,6 +31,7 @@ import feiqq.bean.Message;
 import feiqq.socket.client.Client;
 import feiqq.ui.common.MyOptionPane;
 import feiqq.util.Constants;
+import feiqq.util.MacUtil;
 import feiqq.util.PictureUtil;
 import feiqq.util.StringUtil;
 
@@ -119,12 +120,19 @@ public class LoginWindow extends JDialog {
 			content.add(userNameField);
 			userNameField.setBounds(121, 126, 183, 30);
 			userNameField.setBorder(Constants.LIGHT_GRAY_BORDER);
+			if(client.getSetup() != null && client.getSetup().isSavePassword()) {
+				userNameField.setText(client.getSetup().getUserName());
+			}
+			
 				
 			// 密码
 			passWordField = new JPasswordField();
 			content.add(passWordField);
 			passWordField.setBounds(121, 158, 183, 30);
 			passWordField.setBorder(Constants.LIGHT_GRAY_BORDER);
+			if(client.getSetup() != null && client.getSetup().isAutoLogin()) {
+				passWordField.setText(client.getSetup().getUserPassword());
+			}
 		
 			// 最小化按钮
 			minButton = new JLabel();
@@ -142,10 +150,15 @@ public class LoginWindow extends JDialog {
 			savePassCheckBox = new JLabel();
 			content.add(savePassCheckBox);
 			savePassCheckBox.setBounds(121, 195, 20, 22);
-			savePassCheckBox.setIcon(PictureUtil.getPicture("buxuanzhong.png"));
+			if(client.getSetup() != null && client.getSetup().isSavePassword()) {
+				savePassCheckBox.setIcon(PictureUtil.getPicture("xuanzhong.png"));
+			}else {
+				savePassCheckBox.setIcon(PictureUtil.getPicture("buxuanzhong.png"));
+			}
+			
 		
 			// 保存密码Txt
-			savePassLabel = new JLabel("保存密码");
+			savePassLabel = new JLabel("保存账号");
 			content.add(savePassLabel);
 			savePassLabel.setFont(Constants.BASIC_FONT);
 			savePassLabel.setBounds(147, 192, 54, 24);
@@ -154,10 +167,15 @@ public class LoginWindow extends JDialog {
 			autoLoginCheckBox = new JLabel();
 			content.add(autoLoginCheckBox);
 			autoLoginCheckBox.setBounds(226, 195, 20, 22);
-			autoLoginCheckBox.setIcon(PictureUtil.getPicture("buxuanzhong.png"));
+			if(client.getSetup() != null && client.getSetup().isAutoLogin()) {
+				autoLoginCheckBox.setIcon(PictureUtil.getPicture("xuanzhong.png"));
+			}else {
+				autoLoginCheckBox.setIcon(PictureUtil.getPicture("buxuanzhong.png"));
+			}
+			
 		
 			// 自动登录Txt
-			autoLoginLabel = new JLabel("自动登录");
+			autoLoginLabel = new JLabel("保存密码");
 			content.add(autoLoginLabel);
 			autoLoginLabel.setFont(Constants.BASIC_FONT);
 			autoLoginLabel.setBounds(251, 192, 52, 24);
@@ -442,9 +460,34 @@ public class LoginWindow extends JDialog {
 			MyOptionPane.showMessageDialog(client.getLogin(), "请输入密码！", "友情提示", Constants.NOTICE);
 			return;
 		}
-		String str = name + Constants.LEFT_SLASH + pass;
+		String mac = MacUtil.getMac();
+		String autoLogin = null;
+		String savePassword = null;
+		if(isAutoLogin) {
+			autoLogin = "true";
+		}else {
+			autoLogin = "false";
+		}
+		if(isSavePass) {
+			savePassword = "true";
+		}else {
+			savePassword = "false";
+		}
+		String str = name + Constants.LEFT_SLASH + pass + Constants.LEFT_SLASH + autoLogin + Constants.LEFT_SLASH + savePassword + Constants.LEFT_SLASH + mac;
+//		client.getLogin().setVisible(false);
+//		LoginingWindow.getInstance(client, str);
+//		client.setLoginingWindow(loginingWindow);
+//		try {
+//			Thread.sleep(3000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		if(client.isFalg()) {
+			
 		// 登录服务器
 		client.sendMsg(new Message(Constants.LOGIN_MSG, str));
+//		}
+		
 	}
 
 }

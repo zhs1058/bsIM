@@ -3,6 +3,7 @@ package feiqq.socket.client;
 import feiqq.bean.Category;
 import feiqq.bean.Group;
 import feiqq.bean.Message;
+import feiqq.bean.Setup;
 import feiqq.bean.User;
 import feiqq.ui.common.CategoryNode;
 import feiqq.ui.frame.AddFriendWindow;
@@ -13,6 +14,7 @@ import feiqq.ui.frame.ChatRoomPanel;
 import feiqq.ui.frame.CreateGroupWindow;
 import feiqq.ui.frame.FindPasswordWindow;
 import feiqq.ui.frame.LoginWindow;
+import feiqq.ui.frame.LoginingWindow;
 import feiqq.ui.frame.MainWindow;
 import feiqq.ui.frame.RegisterWindow;
 import feiqq.ui.friend.FriendNode;
@@ -74,6 +76,8 @@ public class Client {
 	private ChangeInfoWindow changeInfoWindow;
 	/** 找回密码框*/
 	private FindPasswordWindow findPasswordWindow;
+	/** 正在登陆框*/
+	private LoginingWindow loginingWindow;
 	/** 聊天室 */
 	private ChatRoom room;
 	/** 系统托盘 */
@@ -123,6 +127,8 @@ public class Client {
 	private List<Category> categoryList;
 	private List<Map<String, List<User>>> memberList;
 	private List<Group> groupList;
+	private Setup setup;
+	private boolean falg = false;
 
 	public Client() {
 		final ClientHandler clientHandler = new ClientHandler(this);
@@ -368,6 +374,31 @@ public class Client {
 		this.findPasswordWindow = findPasswordWindow;
 	}
 
+	public Setup getSetup() {
+		return setup;
+	}
+
+	public void setSetup(Setup setup) {
+		this.setup = setup;
+	}
+
+	public LoginingWindow getLoginingWindow() {
+		return loginingWindow;
+	}
+
+	public void setLoginingWindow(LoginingWindow loginingWindow) {
+		this.loginingWindow = loginingWindow;
+	}
+
+	public boolean isFalg() {
+		return falg;
+	}
+
+	public void setFalg(boolean falg) {
+		this.falg = falg;
+	}
+
+	
 	
 
 	

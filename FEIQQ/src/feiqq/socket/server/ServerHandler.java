@@ -13,11 +13,13 @@ import feiqq.bean.Category;
 import feiqq.bean.Group;
 import feiqq.bean.CateMember;
 import feiqq.bean.Message;
+import feiqq.bean.Setup;
 import feiqq.bean.User;
 import feiqq.method.CategoryDao;
 import feiqq.method.GroupDao;
 import feiqq.method.GroupUserDao;
 import feiqq.method.OffLineDao;
+import feiqq.method.SetupDao;
 import feiqq.method.CateMemberDao;
 import feiqq.method.UserDao;
 import feiqq.util.Constants;
@@ -37,6 +39,7 @@ public class ServerHandler implements ChannelInboundHandler {
 	private GroupUserDao groupUserDao;
 	private GroupDao groupDao;
 	private OffLineDao offLineDao;
+	private SetupDao setupDao;
 
 	// 这里其实可以直接使用ip存储，为了防止一台电脑登录多个账号
 	/** key：SocketAddress，value：用户Id */
@@ -55,6 +58,7 @@ public class ServerHandler implements ChannelInboundHandler {
 		groupUserDao = new GroupUserDao();
 		groupDao = new GroupDao();
 		offLineDao = new OffLineDao();
+		setupDao = new SetupDao();
 	}
 
 	@Override
@@ -141,6 +145,31 @@ public class ServerHandler implements ChannelInboundHandler {
 		// 接收到的消息
 		String msgStr = ((ByteBuf) msg).toString(Charset.defaultCharset());
 		Message message = JsonUtil.transToBean(msgStr);
+		// 查询预置信息
+		if(null != message && Constants.SEARCH_PRESET_INFO.equals(message.getType())) {
+			String mac = message.getContent();
+			Setup setup = setupDao.getMessageByMac(mac);
+			if(setup != null) {
+				String autoLogin = null;
+				String savePassword = null;
+				if(setup.isAutoLogin()) {
+					autoLogin = "true";
+				}else {
+					autoLogin = "false";
+				}
+				if(setup.isSavePassword()) {
+					savePassword = "true";
+				}else {
+					savePassword = "false";
+				}
+				String str = setup.getUserName() + Constants.LEFT_SLASH + setup.getUserPassword() + Constants.LEFT_SLASH + autoLogin + Constants.LEFT_SLASH + savePassword;
+				Message backMsg = new Message();
+				backMsg.setContent(str);
+				backMsg.setType(Constants.PALIND_MSG);
+				backMsg.setPalindType(Constants.ECHO_SEARCH_PRESET_INFO);
+				sendMsg(channel, backMsg);
+			}
+		}
 		// 登陆
 		if (null != message && Constants.LOGIN_MSG.equals(message.getType())) {
 			String content = message.getContent();
@@ -149,6 +178,35 @@ public class ServerHandler implements ChannelInboundHandler {
 			Message backMsg = login(message, channel);
 			backMsg.setPalindType(Constants.LOGIN_MSG);
 			sendMsg(channel, backMsg);
+			
+			//保存密码与自动登陆
+			//if(!msgStr1[2].equals("false") && !msgStr1[3].equals("false")) {
+				Setup setup = new Setup();
+				setup.setUserName(msgStr1[0]);
+				setup.setUserPassword(msgStr1[1]);
+				if(msgStr1[2].equals("true")) {
+					setup.setAutoLogin(true);
+				}else {
+					setup.setAutoLogin(false);
+				}
+				if(msgStr1[3].equals("true")) {
+					setup.setSavePassword(true);
+				}else {
+					setup.setSavePassword(false);;
+				}
+				setup.setMacAddress(msgStr1[4]);
+				if(setupDao.getMessageByMac(setup.getMacAddress()) != null) {
+					setupDao.update(setup);
+				}else {
+					setupDao.save(setup);
+				}
+				
+//			}else {
+//				if(setupDao.getMessageByMac(msgStr1[4]) != null) {
+//					setupDao.delSetup(msgStr1[4]);
+//				}
+//			}
+			
 			
 			//检查离线消息
 			System.out.println("正在检查离线消息");

@@ -3,6 +3,7 @@ package feiqq.socket.client;
 import feiqq.bean.Category;
 import feiqq.bean.Group;
 import feiqq.bean.Message;
+import feiqq.bean.Setup;
 import feiqq.bean.User;
 import feiqq.thread.FlashThread;
 import feiqq.thread.ShakeThread;
@@ -74,6 +75,8 @@ public class ClientHandler implements ChannelInboundHandler {
 				if (null != message.getUser()) {
 					// 销毁窗体
 					client.getLogin().dispose();
+					//client.getLoginingWindow().dispose();
+					//client.setFalg(false);
 					// 移除托盘图标
 					SystemTray.getSystemTray().remove(client.getIcon());
 					// 共有信息到client
@@ -88,6 +91,27 @@ public class ClientHandler implements ChannelInboundHandler {
 					MyOptionPane.showMessageDialog(client.getLogin(), message.getContent(), "友情提示", Constants.FAILURE);
 				}
 			}
+			if(Constants.ECHO_SEARCH_PRESET_INFO.equals(message.getPalindType())) {
+				String content = message.getContent();
+				String msgStr1[] = content.split(Constants.LEFT_SLASH);
+				Setup setup = new Setup();
+				setup.setUserName(msgStr1[0]);
+				setup.setUserPassword(msgStr1[1]);
+				if(msgStr1[2].equals("true")) {
+					setup.setAutoLogin(true);
+				}else {
+					setup.setAutoLogin(false);
+				}
+				if(msgStr1[3].equals("true")) {
+					setup.setSavePassword(true);
+				}else {
+					setup.setSavePassword(false);
+				}
+				client.setSetup(setup);
+				
+				
+			}
+			
 			if (Constants.REGISTER_MSG.equals(message.getPalindType())) {
 				if (Constants.SUCCESS.equals(message.getContent())) {
 					MyOptionPane.showMessageDialog(client.getRegister(), "注册成功！", "友情提示", Constants.SUCCESS);
