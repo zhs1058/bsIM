@@ -301,7 +301,7 @@ public class ClientHandler implements ChannelInboundHandler {
 		if(null != message && Constants.GENRAL_MSG.equals(message.getType()) && Constants.GROUPCHAT.equals(message.getSenderType())) {
 			// 相应好友的panel没打开
 			if (!client.tabMap.containsKey(message.getReceiverName())) {
-				System.out.println("这是群聊，执行岛这里！！！！");
+				System.out.println("这是群聊，执行岛这里！！！！"+message.getSenderName()+message.getReceiverName());
 				// 将消息存放到相应的队列中
 				Queue<Message> queue = client.msgQueMap.get(message.getReceiverName()) == null ? 
 						new LinkedList<Message>() : client.msgQueMap.get(message.getReceiverName()); 

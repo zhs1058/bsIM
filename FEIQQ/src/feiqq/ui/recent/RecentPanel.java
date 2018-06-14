@@ -287,7 +287,7 @@ public class RecentPanel extends JPanel {
 		this.add(jScrollPane, BorderLayout.CENTER);
 	}
 	public void loadTree(User user) {
-		if(!selfClient.recentNodeMap.containsKey(user.getId())) {
+		if(!selfClient.recentNodeMap.containsKey(user.getNickName())) {
 			RecentNode recentNode = new RecentNode(PictureUtil.getPicture("avatar2.png"), user);
 			root.add(recentNode);
 			model.reload();	
@@ -295,7 +295,7 @@ public class RecentPanel extends JPanel {
 		}
 	}
 	public void loadTree(Group group) {
-		if(!selfClient.recentNodeMap.containsKey(group.getId())) {
+		if(!selfClient.recentNodeMap.containsKey(group.getName())) {
 			RecentNode recentNode = new RecentNode(PictureUtil.getPicture("group1.png"), group);
 			root.add(recentNode);
 			model.reload();	

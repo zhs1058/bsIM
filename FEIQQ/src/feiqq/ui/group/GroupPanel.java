@@ -175,7 +175,6 @@ public class GroupPanel extends JPanel {
 										// 开启聊天窗口
 										Message message = null;
 										Group groupMember = ((GroupNode)object).group;
-										// TODO 代码冗余，记得来改
 										ChatRoom room = selfClient.getRoom() == null ? 
 												ChatRoom.getInstance(selfClient) : selfClient.getRoom();
 										// 相应好友的panel没打开
@@ -244,6 +243,7 @@ public class GroupPanel extends JPanel {
 											// 将room信息返回
 											selfClient.setRoom(room);
 											selfClient.tabMap.put(groupMember.getName(), pane);
+											//System.err.println("房间信息" + groupMember.getName()+ "和" + groupMember.getId());
 											// 告知client，我已接受到相应好友消息
 											selfClient.msgStatusMap.put(groupMember.getName(), false);
 //											// 告知client，下次来消息了继续闪烁
