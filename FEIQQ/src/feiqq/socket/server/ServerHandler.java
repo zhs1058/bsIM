@@ -222,6 +222,19 @@ public class ServerHandler implements ChannelInboundHandler {
 				}
 			}
 			offLineDao.deleteMessage(user.getId());
+			
+			//检查群组离线消息
+			System.out.println("正在检查群组离线消息");
+			List<Message> listMessageChars = offLineDao.getOffLineCharsMessage(user.getId());
+			if(listMessageChars != null && listMessageChars.size() > 0) {
+				for(Message messages : listMessageChars) {
+					sendMsg(channel,messages);
+					//System.out.println("发送消息");
+				}
+			}
+			offLineDao.deleteCharsMessage(user.getId());
+			
+			
 		}
 		//找回密码
 		if(null != message && Constants.FIND_PASSWORD.equals(message.getType())) {
@@ -361,6 +374,7 @@ public class ServerHandler implements ChannelInboundHandler {
 								backMsg.setReceiverPort(tempInfo.substring(tempInfo.indexOf(":") + 1, tempInfo.length()));
 								sendMsg(clientMap.get(String.valueOf(userId)), backMsg);
 							}else {
+								backMsg.setReceiverAddress(String.valueOf(userId));
 								boolean flag = offLineDao.saveMessage(backMsg);
 								if(!flag) {
 									// TODO 离线消息发送失败  ，系统消息待实现

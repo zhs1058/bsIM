@@ -55,12 +55,39 @@ public class OffLineDao extends BaseDao {
 		}
 		return listMessage;
 	}
+	/*
+	 * 查询群组离线消息
+	 *
+	 */
+	public List<Message> getOffLineCharsMessage(String receiverId){
+		List<Message> listMessage = new ArrayList<>();
+		String sql = "select * from fqq_offline fol where  fol.receiver_address = '" + receiverId + "'";
+		ResultSet result = select(sql);
+		try {
+			while(result != null && result.next()) {
+				Message message = assembleMessage(result);
+				listMessage.add(message);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return listMessage;
+	}
 	
 	/*
 	 * 删除留言信息
 	 */
 	public void deleteMessage(String receiverId) {
 		String sql = "delete from fqq_offline where receiver_id = '" + receiverId +  "'";
+		operate(sql);
+	}
+	
+	/*
+	 * 删除群组聊天消息
+	 */
+	public void deleteCharsMessage(String receiverId) {
+		String sql = "delete from fqq_offline where receiver_address = '" + receiverId +  "'";
 		operate(sql);
 	}
 	private Message assembleMessage(ResultSet result) {
