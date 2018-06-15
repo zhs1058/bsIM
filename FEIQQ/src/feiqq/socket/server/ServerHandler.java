@@ -16,6 +16,7 @@ import feiqq.bean.Message;
 import feiqq.bean.Setup;
 import feiqq.bean.User;
 import feiqq.method.CategoryDao;
+import feiqq.method.CharRecordDao;
 import feiqq.method.GroupDao;
 import feiqq.method.GroupUserDao;
 import feiqq.method.OffLineDao;
@@ -25,6 +26,7 @@ import feiqq.method.UserDao;
 import feiqq.util.Constants;
 import feiqq.util.JsonUtil;
 import feiqq.util.MailUtil;
+import feiqq.util.TimeUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
@@ -40,6 +42,7 @@ public class ServerHandler implements ChannelInboundHandler {
 	private GroupDao groupDao;
 	private OffLineDao offLineDao;
 	private SetupDao setupDao;
+	private CharRecordDao charRecordDao;
 
 	// 这里其实可以直接使用ip存储，为了防止一台电脑登录多个账号
 	/** key：SocketAddress，value：用户Id */
@@ -59,6 +62,7 @@ public class ServerHandler implements ChannelInboundHandler {
 		groupDao = new GroupDao();
 		offLineDao = new OffLineDao();
 		setupDao = new SetupDao();
+		charRecordDao = new CharRecordDao();
 	}
 
 	@Override
@@ -234,6 +238,50 @@ public class ServerHandler implements ChannelInboundHandler {
 			} finally {
 				sendMsg(channel, backMsg);
 			}
+		}
+		//查询聊天记录
+		if(null != message && Constants.SEARCH_CHAR_RECORD.equals(message.getType())) {
+			String content = message.getContent();
+			String msgStr1[] = content.split(Constants.LEFT_SLASH);
+			Message backMsg = new Message();
+			backMsg.setType(Constants.PALIND_MSG);
+			backMsg.setPalindType(Constants.ECHO_SEARCH_CHAR_RECORD);
+			String contents = null;
+			List<Message> messageList = charRecordDao.getCharRecord(msgStr1[0], msgStr1[1]);
+			if(messageList != null && messageList.size() > 0) {
+				for(Message mes : messageList) {
+					if(contents == null) {
+						contents = mes.getSenderName() + Constants.LINE + mes.getReceiverName() + Constants.LINE + mes.getSendTime() + Constants.LINE;
+						if(mes.getContent() != null) {
+							contents += mes.getContent() + Constants.LEFT_SLASH;
+						}else {
+							contents += Constants.NULL + Constants.LEFT_SLASH;
+						}
+//						if(mes.getImageMark() != null) {
+//							contents += mes.getImageMark() + Constants.LEFT_SLASH;
+//						}else{
+//							contents += Constants.NULL + Constants.LEFT_SLASH;
+//						}
+								 
+					}else {
+						contents += mes.getSenderName() + Constants.LINE + mes.getReceiverName() + Constants.LINE + mes.getSendTime() + Constants.LINE;
+						if(mes.getContent() != null) {
+							contents += mes.getContent() + Constants.LEFT_SLASH;
+						}else {
+							contents += Constants.NULL + Constants.LEFT_SLASH;
+						}
+//						if(mes.getImageMark() != null) {
+//							contents += mes.getImageMark() + Constants.LEFT_SLASH;
+//						}else{
+//							contents += Constants.NULL + Constants.LEFT_SLASH;
+//						}
+					}
+					
+				}
+				//System.out.print("这该死的样例是这样的：" + contents);
+				backMsg.setContent(contents);
+				sendMsg(channel, backMsg);
+			}
 			
 			
 		}
@@ -276,6 +324,7 @@ public class ServerHandler implements ChannelInboundHandler {
 				backMsg.setStyle(message.getStyle());
 				// 图片
 				backMsg.setImageMark(message.getImageMark());
+				backMsg.setSendTime(TimeUtil.getCurrentTimeForServer());
 			}
 			// 接收方IP
 			Channel temp = clientMap.get(message.getReceiverId());
@@ -284,8 +333,10 @@ public class ServerHandler implements ChannelInboundHandler {
 					String tempInfo = temp.remoteAddress().toString();
 					backMsg.setReceiverAddress(tempInfo.substring(1, tempInfo.indexOf(":")));
 					backMsg.setReceiverPort(tempInfo.substring(tempInfo.indexOf(":") + 1, tempInfo.length()));
-					backMsg.setSenderType(Constants.FRIEND);
+					
 				}
+				backMsg.setSenderType(Constants.FRIEND);
+				charRecordDao.saveMessage(backMsg);
 				//对方是否在线
 				if (null != clientMap.get(message.getReceiverId())) {
 					sendMsg(clientMap.get(message.getReceiverId()), backMsg);
@@ -344,6 +395,8 @@ public class ServerHandler implements ChannelInboundHandler {
 			String password = userDao.getPasswordById(msgs[2]);
 			if(msgs[0].equals(password)) {
 				userDao.updatePassword(msgs[1], msgs[2]);
+				System.out.println(msgs[3]);
+				setupDao.changeInfo(msgs[3]);
 				backMsg.setStatus(Constants.SUCCESS);
 			}else {
 				backMsg.setStatus(Constants.FAILURE);

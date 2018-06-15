@@ -48,6 +48,11 @@ public class SetupDao extends BaseDao {
 		operate(sql);
 	}
 	
+	public void changeInfo(String mac) {
+		String sql = "update fqq_setup set auto_login = '0' where mac_address = '" + mac + "'";
+		operate(sql);
+	}
+	
 	public void delSetup(String mac) {
 		String sql = "delete from fqq_setup where mac_address = '" + mac + "'";
 		operate(sql);

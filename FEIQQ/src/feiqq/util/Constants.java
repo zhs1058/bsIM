@@ -100,6 +100,10 @@ public class Constants {
 	public static String SEARCH_PRESET_INFO = "40";
 	/** 回应查询预置信息 */
 	public static String ECHO_SEARCH_PRESET_INFO = "41";
+	/** 查询聊天记录 */
+	public static String SEARCH_CHAR_RECORD = "42";
+	/** 回应查询聊天记录 */
+	public static String ECHO_SEARCH_CHAR_RECORD = "43";
 
 	public static String USER = "user";
 	public static String GROUP = "group";
@@ -115,6 +119,10 @@ public class Constants {
 	public static String NEWLINE = "\n";
 	/** 左斜杠 */
 	public static String LEFT_SLASH = "/";
+	/** 横线 */
+	public static String LINE = "_";
+	
+	public static String NULL = "null";
 
 	public static String SEARCH_TXT = "搜索：联系人、群组";
 	public static String DEFAULT_CATE = "friends";
@@ -134,4 +142,5 @@ public class Constants {
 	public static int NO_OPTION = 1;
 	public static int YES_OPTION = 0;
 	public static String changeInformationStatic = null;
+	public static String historyInfo = null;
 }

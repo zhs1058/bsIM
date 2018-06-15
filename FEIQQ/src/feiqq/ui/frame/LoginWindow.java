@@ -152,8 +152,10 @@ public class LoginWindow extends JDialog {
 			savePassCheckBox.setBounds(121, 195, 20, 22);
 			if(client.getSetup() != null && client.getSetup().isSavePassword()) {
 				savePassCheckBox.setIcon(PictureUtil.getPicture("xuanzhong.png"));
+				isSavePass = true;
 			}else {
 				savePassCheckBox.setIcon(PictureUtil.getPicture("buxuanzhong.png"));
+				isSavePass = false;
 			}
 			
 		
@@ -169,8 +171,10 @@ public class LoginWindow extends JDialog {
 			autoLoginCheckBox.setBounds(226, 195, 20, 22);
 			if(client.getSetup() != null && client.getSetup().isAutoLogin()) {
 				autoLoginCheckBox.setIcon(PictureUtil.getPicture("xuanzhong.png"));
+				isAutoLogin = true;
 			}else {
 				autoLoginCheckBox.setIcon(PictureUtil.getPicture("buxuanzhong.png"));
+				isAutoLogin = false;
 			}
 			
 		

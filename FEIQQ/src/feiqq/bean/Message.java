@@ -40,6 +40,8 @@ public class Message {
 	private String palindType;
 	/** 发送者类别*/
 	private String senderType;
+	/** 发送时间 */
+	private String sendTime;
 
 	// TODO
 	private String status;
@@ -306,7 +308,14 @@ public class Message {
 	public void setSenderType(String senderType) {
 		this.senderType = senderType;
 	}
+	public String getSendTime() {
+		return sendTime;
+	}
+	public void setSendTime(String sendTime) {
+		this.sendTime = sendTime;
+	}
 
+	
 	
 	
 }

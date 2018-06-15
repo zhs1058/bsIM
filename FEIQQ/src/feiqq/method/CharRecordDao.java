@@ -6,24 +6,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import feiqq.bean.Message;
-import feiqq.util.Constants;
 
-public class OffLineDao extends BaseDao {
+public class CharRecordDao extends BaseDao {
 	
 	/*
-	 * 保存离线数据
+	 * 保存聊天数据
 	 * @param Message 
 	 * 
 	 */
 	public boolean saveMessage(Message message) {
-		String sql = " insert into fqq_offline (sender_id , sender_name , sender_address ,"
-				+ " sender_port , receiver_id , receiver_name , receiver_address , "
-				+ "receiver_port , content , type , palind_type , sender_type , size , family , "
+		String condition = message.getSenderName() + "_" + message.getReceiverName();
+		String sql = " insert into fqq_char_record (s_r , time , sender_id , sender_name ,"
+				+ " receiver_id , receiver_name , "
+				+ "content , type , palind_type , sender_type , size , family , "
 				+ "back , fore , style , image_mark ) values ("
+				+ "'" + condition + "','" + message.getSendTime() + "',"
 				+ "'" + message.getSenderId() + "',"+ "'" + message.getSenderName() + "',"
-				+ "'" + message.getSenderAddress() + "','" + message.getSenderPort() + "',"
 				+ "'" + message.getReceiverId() + "','" + message.getReceiverName() +"',"
-				+ "'" + message.getReceiverAddress() + "','" + message.getReceiverPort()+"',"
 				+ "'" + message.getContent() + "','" + message.getType() +"',"
 				+ "'" + message.getPalindType() + "','" + message.getSenderType() + "','"+ message.getSize() +"',"
 				+ "'" + message.getFamily() + "','" + message.getBack() +"',"
@@ -38,11 +37,13 @@ public class OffLineDao extends BaseDao {
 	}
 	
 	/*
-	 * 查询留言信息
+	 * 查询聊天信息
 	 */
-	public List<Message> getOffLineMessage(String receiverId){
+	public List<Message> getCharRecord(String receiverName , String senderName){
+		String condition1 = senderName + "_" + receiverName;
+		String condition2 = receiverName + "_" + senderName;
 		List<Message> listMessage = new ArrayList<>();
-		String sql = "select * from fqq_offline fol where  fol.receiver_id = '" + receiverId + "'";
+		String sql = "select * from fqq_char_record where  s_r = '" + condition1 + "' or s_r = '" + condition2 + "' order by time asc";
 		ResultSet result = select(sql);
 		try {
 			while(result != null && result.next()) {
@@ -67,15 +68,13 @@ public class OffLineDao extends BaseDao {
 		Message message = new Message();
 		
 		try {
+			message.setSendTime(result.getString("time"));
+			
 			message.setSenderId(result.getString("sender_id"));
 			message.setSenderName(result.getString("sender_name"));
-			message.setSenderAddress(result.getString("sender_address"));
-			message.setSenderPort(result.getString("sender_port"));
 			
 			message.setReceiverId(result.getString("receiver_id"));
 			message.setReceiverName(result.getString("receiver_name"));
-			message.setReceiverAddress(result.getString("receiver_address"));
-			message.setReceiverPort(result.getString("receiver_port"));
 			
 			message.setContent(result.getString("content"));
 			message.setType(result.getString("type"));

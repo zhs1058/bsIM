@@ -19,6 +19,7 @@ import feiqq.ui.friend.FriendNode;
 import feiqq.ui.group.GroupNode;
 import feiqq.util.Constants;
 import feiqq.util.JsonUtil;
+import feiqq.util.MacUtil;
 import feiqq.util.MusicUtil;
 import feiqq.util.PictureUtil;
 import feiqq.util.StringUtil;
@@ -181,6 +182,13 @@ public class ClientHandler implements ChannelInboundHandler {
 					MyOptionPane.showMessageDialog(client.getMain(), "添加群聊失败", "友情提示", Constants.FAILURE);
 				}
 			}
+			//回应查询聊天记录
+			if(Constants.ECHO_SEARCH_CHAR_RECORD.equals(message.getPalindType())) {
+				//System.out.print("没执行到这里？？？");
+				client.setCharRecord(message.getContent());
+				//Constants.historyInfo = message.getContent();
+				//System.out.print("查询到的客户端历史聊天记录：：:"+Constants.historyInfo);
+			}
 			//回应创建群聊
 			if(Constants.ECHO_CREATE_GROUP.equals(message.getPalindType())) {
 				if(Constants.SUCCESS.equals(message.getStatus())) {
@@ -218,6 +226,9 @@ public class ClientHandler implements ChannelInboundHandler {
 					client.sendMsg(new Message(Constants.EXIT_MSG));
 					client = null;
 					Client newClient = new Client();
+					//查询预置信息
+//					String mac = MacUtil.getMac();
+//					newClient.sendMsg(new Message(Constants.SEARCH_PRESET_INFO, mac));
 					newClient.setLogin(LoginWindow.getInstance(newClient));
 				}else {
 					MyOptionPane.showMessageDialog(client.getChangeInfoWindow(), "修改密码失败!", "友情提示", Constants.FAILURE);

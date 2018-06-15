@@ -24,6 +24,7 @@ import feiqq.socket.client.Client;
 import feiqq.ui.common.MyOptionPane;
 import feiqq.ui.common.MyScrollBarUI;
 import feiqq.util.Constants;
+import feiqq.util.MacUtil;
 import feiqq.util.PictureUtil;
 
 public class ChangeInfoWindow extends JDialog {
@@ -262,7 +263,8 @@ public class ChangeInfoWindow extends JDialog {
 			MyOptionPane.showMessageDialog(client.getRegister(), "密码前后不一致！", "友情提示", Constants.NOTICE);
 			return;
 		}
-		String str = pre + Constants.LEFT_SLASH + cur + Constants.LEFT_SLASH + client.getUser().getId();
+		String mac = MacUtil.getMac();
+		String str = pre + Constants.LEFT_SLASH + cur + Constants.LEFT_SLASH + client.getUser().getId() + Constants.LEFT_SLASH + mac;
 		client.sendMsg(new Message(Constants.CHANGE_PASSWORD, str));
 		
 //		client.getMain().dispose();

@@ -129,6 +129,7 @@ public class Client {
 	private List<Group> groupList;
 	private Setup setup;
 	private boolean falg = false;
+	private String charRecord;
 
 	public Client() {
 		final ClientHandler clientHandler = new ClientHandler(this);
@@ -398,6 +399,15 @@ public class Client {
 		this.falg = falg;
 	}
 
+	public String getCharRecord() {
+		return charRecord;
+	}
+
+	public void setCharRecord(String charRecord) {
+		this.charRecord = charRecord;
+	}
+
+	
 	
 	
 

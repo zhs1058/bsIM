@@ -26,6 +26,13 @@ public class StringUtil {
 	}
 	
 	/**
+	 * 创建历史消息
+	 */
+	public static String createHistoryInfo(String senderName, String receiverName, String time) {
+		return senderName + "-" + receiverName + Constants.SPACE + time + Constants.NEWLINE;
+	}
+	
+	/**
 	 * 创建消息
 	 * @param text 内容
 	 * @param enterKey 是否回车发送

@@ -243,11 +243,79 @@ public class FriendPanel extends JPanel {
 											//将近期打开的好友信息展现在最近模块上
 											//TODO
 											selfClient.getRecentPanel().loadTree(user);
+											//将历史消息显示在面板上
+											//System.out.print(user.getNickName()+Constants.LEFT_SLASH+selfClient.getUser().getNickName());
+											selfClient.sendMsg(new Message(Constants.SEARCH_CHAR_RECORD, user.getNickName()+Constants.LEFT_SLASH+selfClient.getUser().getNickName()));
+											//System.out.println("历史消息执行到判断");
+											int count = 0;
+											while(selfClient.getCharRecord() == null) {
+												System.out.println("等待回执。。。");
+												count++;
+												if(count > 1000) {
+													break;
+												}
+											}
+											if(selfClient.getCharRecord() != null) {
+												String news[] = selfClient.getCharRecord().split(Constants.LEFT_SLASH);
+												System.out.println("接收到的消息长度为：" + news.length);
+												for(int newIndex = 0; newIndex < news.length; newIndex++) {
+													String messages[] = news[newIndex].split(Constants.LINE);
+													System.out.println(messages[0]+messages[1]+messages[2]+messages[3]);
+													try {
+														StyledDocument doc = pane.historyTextPane.getStyledDocument();
+														// 名称、日期
+														SimpleAttributeSet nameSet = getDefaultAttributeSet();
+														doc.insertString(doc.getLength(), StringUtil.createHistoryInfo(messages[0], messages[1], messages[2]), nameSet);
+														SimpleAttributeSet contentSet = getDefaultAttributeSet();
+														
+														// 缩进
+														StyleConstants.setLeftIndent(contentSet, 10);
+														// 此处开始缩进
+														doc.setParagraphAttributes(doc.getLength(), doc.getLength(), contentSet, true);
+														// 正文
+														// 文字或者图文混合
+														if (!messages[3].equals("null")) {
+															// 记录下这行消息插入的光标在哪里
+															// 将光标放置到消息的最后
+															pane.position = doc.getLength();
+															doc.insertString(doc.getLength(), messages[3], contentSet);
+//															if (!messages[4].equals("null") && messages[4].split("/").length > 0) {
+//																for (String str : messages[4].split("/")) {
+//																	int imgIndex = Integer.valueOf(str.substring(str.indexOf("|")+1));// 图片的位置（下标）
+//																	pane.historyTextPane.setCaretPosition(pane.position+imgIndex);// 光标
+//																	String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
+//																	String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
+//																	pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
+//																}
+//															}
+														} else {// 文字为空，说明发送的全部是图片
+//															for (String str : messages[4].split("/")) {
+//																// 此处要插入图片
+//																pane.historyTextPane.setCaretPosition(doc.getLength());// 光标
+//																String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
+//																String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
+//																pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
+//															}
+														}
+														// 换行
+														doc.insertString(doc.getLength(), "\n", contentSet);
+														// 将缩进还原回来
+														StyleConstants.setLeftIndent(contentSet, 0f);
+														doc.setParagraphAttributes(doc.getLength(), doc.getLength(), contentSet, true);
+											
+													} catch (BadLocationException e1) {
+														e1.printStackTrace();
+													}
+													
+												}
+												selfClient.setCharRecord(null);
+											}
 											// 将队列里面的消息显示在面板上
 											if (selfClient.msgQueMap.size() > 0) {
 												try {
 													while ((message = selfClient.msgQueMap.get(user.getNickName()).poll()) != null) {
 														StyledDocument doc = pane.historyTextPane.getStyledDocument();
+														//pane.historyTextPane.setText("这是历史消息。。。。");
 														// 名称、日期
 														SimpleAttributeSet nameSet = getAttributeSet(true, null);
 														doc.insertString(doc.getLength(), StringUtil.createSenderInfo(message.getSenderName()), nameSet);
@@ -531,6 +599,15 @@ public class FriendPanel extends JPanel {
 			// 更新client中好友分组的map，放到client中，为了方便统一调用
 			selfClient.cateNodeMap.put(cate.category.getId(), cate);
 		}
+	}
+	private SimpleAttributeSet getDefaultAttributeSet() {
+		SimpleAttributeSet set = new SimpleAttributeSet();
+		StyleConstants.setBold(set, false);
+		StyleConstants.setItalic(set, false);
+		StyleConstants.setFontSize(set, 15);
+		StyleConstants.setFontFamily(set, "宋体");
+		StyleConstants.setForeground(set, Color.GRAY);
+		return set;
 	}
 	
 	private SimpleAttributeSet getAttributeSet(boolean isDefault, Message message) {
