@@ -159,7 +159,7 @@ public class MainWindow extends JDialog {
 			productInfo = new JLabel();
 			baseInfo.add(productInfo);
 			productInfo.setBounds(8, 0, 45, 20);
-			productInfo.setText("FEIQQ");
+			productInfo.setText("BSIM");
 		
 			picture = new JLabel();
 			baseInfo.add(picture);
@@ -187,10 +187,10 @@ public class MainWindow extends JDialog {
 			signTextField.setBounds(80, 59, 156, 32);
 			signTextField.setVisible(false);
 		
-			skinButton = new JLabel();
-			baseInfo.add(skinButton);
-			skinButton.setBounds(205, 2, 33, 18);
-			skinButton.setIcon(PictureUtil.getPicture("skin.png"));
+//			skinButton = new JLabel();
+//			baseInfo.add(skinButton);
+//			skinButton.setBounds(205, 2, 33, 18);
+//			skinButton.setIcon(PictureUtil.getPicture("skin.png"));
 		
 			minButton = new JLabel();
 			baseInfo.add(minButton);
@@ -348,27 +348,27 @@ public class MainWindow extends JDialog {
 			}
 		});
 		// 换肤按钮事件
-		skinButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseExited(MouseEvent e) {
-				skinButton.setIcon(PictureUtil.getPicture("skin.png"));
-			}
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				skinButton.setIcon(PictureUtil.getPicture("skin_active.png"));
-			}
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				if (null == client.getChangeInfoWindow()) {					
-					ChangeInfoWindow changeInfoWindow = ChangeInfoWindow.getInstance(client);
-					client.setChangeInfoWindow(changeInfoWindow);
-					
-				} else {
-					//MyOptionPane.showMessageDialog(client.getMain(), "窗口重复打开不太好哦！", "友情提示");
-					client.getChangeInfoWindow().requestFocus();
-				}
-			}
-		});
+//		skinButton.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseExited(MouseEvent e) {
+//				skinButton.setIcon(PictureUtil.getPicture("skin.png"));
+//			}
+//			@Override
+//			public void mouseEntered(MouseEvent e) {
+//				skinButton.setIcon(PictureUtil.getPicture("skin_active.png"));
+//			}
+//			@Override
+//			public void mouseReleased(MouseEvent e) {
+//				if (null == client.getChangeInfoWindow()) {					
+//					ChangeInfoWindow changeInfoWindow = ChangeInfoWindow.getInstance(client);
+//					client.setChangeInfoWindow(changeInfoWindow);
+//					
+//				} else {
+//					//MyOptionPane.showMessageDialog(client.getMain(), "窗口重复打开不太好哦！", "友情提示");
+//					client.getChangeInfoWindow().requestFocus();
+//				}
+//			}
+//		});
 		//test
 		
 		signature.addMouseListener(new MouseAdapter() {

@@ -212,7 +212,7 @@ public class LoginWindow extends JDialog {
 		if (SystemTray.isSupported()) {
 			try {
 				tray = SystemTray.getSystemTray();
-				icon = new TrayIcon(PictureUtil.getPicture("/qq_icon.png").getImage(), "FEIQQ");
+				icon = new TrayIcon(PictureUtil.getPicture("/qq_icon.png").getImage(), "BSIM");
 				icon.setImageAutoSize(true); //自动适应大小
 				icon.addMouseListener(new MouseAdapter() {
 					@Override
