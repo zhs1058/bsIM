@@ -504,7 +504,17 @@ public class ServerHandler implements ChannelInboundHandler {
 					backMsg.setSenderId(message.getSenderId());
 					backMsg.setSenderName(message.getSenderName());
 					backMsg.setContent(content[0]);// 将群组id带过去
-					sendMsg(clientMap.get(user.getId()), backMsg);
+					if(clientMap.get(user.getId()) != null ) {
+						sendMsg(clientMap.get(user.getId()), backMsg);
+					}else {
+						backMsg.setReceiverId(user.getId());
+						backMsg.setSize(0);
+						backMsg.setBack(0);
+						backMsg.setFore(0);
+						backMsg.setStyle(0);
+						offLineDao.saveMessage(backMsg);
+					}
+					
 				}
 			} else {
 				backMsg.setType(Constants.PALIND_MSG);
