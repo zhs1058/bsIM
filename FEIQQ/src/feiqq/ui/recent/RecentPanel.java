@@ -122,111 +122,111 @@ public class RecentPanel extends JPanel {
 					}
 					// path中的node节点（path不为空，这里基本不会空）
 					Object object = path.getLastPathComponent();
-					if (e.getClickCount() == 2) {
-						// 好友node节点（区分群组）
-						if (object instanceof RecentNode) {
-							for (int i = 0; i < root.getChildCount(); i++) {
-								Object recent = root.getChildAt(i);
-								// 不是鼠标选中的那个
-								if (recent != ((RecentNode)object)) {
-									((RecentNode)recent).userContent.setBackground(Color.WHITE);
-								} else {
-									((RecentNode)object).userContent.setBackground(selectColor);
-									// 开启聊天窗口
-									Message message = null;
-									String name = null;
-									User user = null;
-									Group group = null;
-									if(((RecentNode)object).friend != null) {
-										user = ((RecentNode)object).friend;
-										name = ((RecentNode)object).friend.getNickName();
-									}else {
-										group = ((RecentNode)object).group;
-										name = ((RecentNode)object).group.getName();
-									}
-									// TODO 代码冗余，记得来改
-									ChatRoom room = selfClient.getRoom() == null ? 
-											ChatRoom.getInstance(selfClient) : selfClient.getRoom();
-									// 相应好友的panel没打开
-									if (!selfClient.tabMap.containsKey(name)) {
-										room.setTitle(name);
-										room.titleLabel.setText(name);
-										ChatRoomPanel pane = null;
-										if(user != null) {
-											pane = new ChatRoomPanel(selfClient, selfClient.getUser(),user);
-										}else {
-											pane = new ChatRoomPanel(selfClient, selfClient.getUser(),group);
-										}
-										
-										room.tabbedPane.addTab(name, null, pane, name);
-										// 重绘过的tab页签
-										room.tabbedPane.setTabComponentAt(room.tabbedPane.indexOfTab(name), 
-												new MyTabComponent(selfClient.getUser().getNickName(), name, room, selfClient));
-										int index = room.tabbedPane.indexOfTab(name);
-										room.tabbedPane.setSelectedIndex(index);
-										// 将队列里面的消息显示在面板上
-										//TODO 消息队列应该吧群组和好友分开, 但是统一不是更好吗
-										if (selfClient.msgQueMap.size() > 0) {
-											try {
-												while ((message = selfClient.msgQueMap.get(name).poll()) != null) {
-													System.out.println("接收到的群聊消息为："+ message.toString());
-													StyledDocument doc = pane.historyTextPane.getStyledDocument();
-													// 名称、日期
-													SimpleAttributeSet nameSet = getAttributeSet(true, null);
-													doc.insertString(doc.getLength(), StringUtil.createSenderInfo(message.getSenderName()), nameSet);
-													SimpleAttributeSet contentSet = getAttributeSet(false, message);
-													// 缩进
-													StyleConstants.setLeftIndent(contentSet, 10);
-													// 此处开始缩进
-													doc.setParagraphAttributes(doc.getLength(), doc.getLength(), contentSet, true);
-													// 正文
-													// 文字或者图文混合
-													if (!StringUtil.isEmpty(message.getContent())) {
-														// 记录下这行消息插入的光标在哪里
-														// 将光标放置到消息的最后
-														pane.position = doc.getLength();
-														doc.insertString(doc.getLength(), message.getContent(), contentSet);
-														if (!StringUtil.isEmpty(message.getImageMark()) && message.getImageMark().split("/").length > 0) {
-															for (String str : message.getImageMark().split("/")) {
-																int imgIndex = Integer.valueOf(str.substring(str.indexOf("|")+1));// 图片的位置（下标）
-																pane.historyTextPane.setCaretPosition(pane.position+imgIndex);// 光标
-																String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
-																String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
-																pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
-															}
-														}
-													} else {// 文字为空，说明发送的全部是图片
-														for (String str : message.getImageMark().split("/")) {
-															// 此处要插入图片
-															pane.historyTextPane.setCaretPosition(doc.getLength());// 光标
-															String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
-															String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
-															pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
-														}
-													}
-													// 换行
-													doc.insertString(doc.getLength(), "\n", contentSet);
-													// 将缩进还原回来
-													StyleConstants.setLeftIndent(contentSet, 0f);
-													doc.setParagraphAttributes(doc.getLength(), doc.getLength(), contentSet, true);
-												}
-											} catch (BadLocationException e1) {
-												e1.printStackTrace();
-											}
-										}
-										// 将room信息返回
-										selfClient.setRoom(room);
-										selfClient.tabMap.put(name, pane);
-										// 告知client，我已接受到相应好友消息
-										selfClient.msgStatusMap.put(name, false);
-//											// 告知client，下次来消息了继续闪烁
-//											selfClient.threadMap.put(user.getName(), false);
-									} 
-								}
-								model.reload(((RecentNode)object));
-							}
-						}
-					}
+//					if (e.getClickCount() == 2) {
+//						// 好友node节点（区分群组）
+//						if (object instanceof RecentNode) {
+//							for (int i = 0; i < root.getChildCount(); i++) {
+//								Object recent = root.getChildAt(i);
+//								// 不是鼠标选中的那个
+//								if (recent != ((RecentNode)object)) {
+//									((RecentNode)recent).userContent.setBackground(Color.WHITE);
+//								} else {
+//									((RecentNode)object).userContent.setBackground(selectColor);
+//									// 开启聊天窗口
+//									Message message = null;
+//									String name = null;
+//									User user = null;
+//									Group group = null;
+//									if(((RecentNode)object).friend != null) {
+//										user = ((RecentNode)object).friend;
+//										name = ((RecentNode)object).friend.getNickName();
+//									}else {
+//										group = ((RecentNode)object).group;
+//										name = ((RecentNode)object).group.getName();
+//									}
+//									// TODO 代码冗余，记得来改
+//									ChatRoom room = selfClient.getRoom() == null ? 
+//											ChatRoom.getInstance(selfClient) : selfClient.getRoom();
+//									// 相应好友的panel没打开
+//									if (!selfClient.tabMap.containsKey(name)) {
+//										room.setTitle(name);
+//										room.titleLabel.setText(name);
+//										ChatRoomPanel pane = null;
+//										if(user != null) {
+//											pane = new ChatRoomPanel(selfClient, selfClient.getUser(),user);
+//										}else {
+//											pane = new ChatRoomPanel(selfClient, selfClient.getUser(),group);
+//										}
+//										
+//										room.tabbedPane.addTab(name, null, pane, name);
+//										// 重绘过的tab页签
+//										room.tabbedPane.setTabComponentAt(room.tabbedPane.indexOfTab(name), 
+//												new MyTabComponent(selfClient.getUser().getNickName(), name, room, selfClient));
+//										int index = room.tabbedPane.indexOfTab(name);
+//										room.tabbedPane.setSelectedIndex(index);
+//										// 将队列里面的消息显示在面板上
+//										//TODO 消息队列应该吧群组和好友分开, 但是统一不是更好吗
+//										if (selfClient.msgQueMap.size() > 0) {
+//											try {
+//												while ((message = selfClient.msgQueMap.get(name).poll()) != null) {
+//													System.out.println("接收到的群聊消息为："+ message.toString());
+//													StyledDocument doc = pane.historyTextPane.getStyledDocument();
+//													// 名称、日期
+//													SimpleAttributeSet nameSet = getAttributeSet(true, null);
+//													doc.insertString(doc.getLength(), StringUtil.createSenderInfo(message.getSenderName()), nameSet);
+//													SimpleAttributeSet contentSet = getAttributeSet(false, message);
+//													// 缩进
+//													StyleConstants.setLeftIndent(contentSet, 10);
+//													// 此处开始缩进
+//													doc.setParagraphAttributes(doc.getLength(), doc.getLength(), contentSet, true);
+//													// 正文
+//													// 文字或者图文混合
+//													if (!StringUtil.isEmpty(message.getContent())) {
+//														// 记录下这行消息插入的光标在哪里
+//														// 将光标放置到消息的最后
+//														pane.position = doc.getLength();
+//														doc.insertString(doc.getLength(), message.getContent(), contentSet);
+//														if (!StringUtil.isEmpty(message.getImageMark()) && message.getImageMark().split("/").length > 0) {
+//															for (String str : message.getImageMark().split("/")) {
+//																int imgIndex = Integer.valueOf(str.substring(str.indexOf("|")+1));// 图片的位置（下标）
+//																pane.historyTextPane.setCaretPosition(pane.position+imgIndex);// 光标
+//																String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
+//																String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
+//																pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
+//															}
+//														}
+//													} else {// 文字为空，说明发送的全部是图片
+//														for (String str : message.getImageMark().split("/")) {
+//															// 此处要插入图片
+//															pane.historyTextPane.setCaretPosition(doc.getLength());// 光标
+//															String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
+//															String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
+//															pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
+//														}
+//													}
+//													// 换行
+//													doc.insertString(doc.getLength(), "\n", contentSet);
+//													// 将缩进还原回来
+//													StyleConstants.setLeftIndent(contentSet, 0f);
+//													doc.setParagraphAttributes(doc.getLength(), doc.getLength(), contentSet, true);
+//												}
+//											} catch (BadLocationException e1) {
+//												e1.printStackTrace();
+//											}
+//										}
+//										// 将room信息返回
+//										selfClient.setRoom(room);
+//										selfClient.tabMap.put(name, pane);
+//										// 告知client，我已接受到相应好友消息
+//										selfClient.msgStatusMap.put(name, false);
+////											// 告知client，下次来消息了继续闪烁
+////											selfClient.threadMap.put(user.getName(), false);
+//									} 
+//								}
+//								model.reload(((RecentNode)object));
+//							}
+//						}
+//					}
 				}
 			}
 			
@@ -256,9 +256,9 @@ public class RecentPanel extends JPanel {
 									root.remove(recentNode);
 									model.reload();
 									if(recentNode.getFriend() != null) {
-										selfClient.recentNodeMap.remove(recentNode.getFriend().getId());
+										selfClient.recentNodeMap.remove(recentNode.getFriend().getNickName());
 									}else {
-										selfClient.recentNodeMap.remove(recentNode.getGroup().getId());
+										selfClient.recentNodeMap.remove(recentNode.getGroup().getName());
 									}
 								}
 								

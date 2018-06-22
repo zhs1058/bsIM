@@ -31,7 +31,7 @@ public class FlashThread extends Thread {
 			CategoryNode parentNode = null;
 			String parentName = null;
 			DefaultTreeModel treeModel = null;
-			DefaultTreeModel recentTreeModel = client.getRecentModel();
+			//DefaultTreeModel recentTreeModel = client.getRecentModel();
 			GroupNode gNode = null;
 			RecentNode rNode = client.recentNodeMap.get(senderName);
 			FriendNode node = client.buddyNodeMap.get(senderName);
@@ -51,7 +51,7 @@ public class FlashThread extends Thread {
 			}
 			
 			
-			// TODO 这里有点儿别扭，以后记得改，好冗杂
+			
 			while (client.msgStatusMap.get(senderName)) {
 				// 节点已展开就不再闪烁父节点
 				if (client.getBuddyTree().isExpanded(path) || client.getGroupTree().isExpanded(path)) {

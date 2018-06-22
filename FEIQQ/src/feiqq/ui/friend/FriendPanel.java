@@ -256,8 +256,9 @@ public class FriendPanel extends JPanel {
 												}
 											}
 											if(selfClient.getCharRecord() != null) {
-												String news[] = selfClient.getCharRecord().split(Constants.LEFT_SLASH);
+												String news[] = selfClient.getCharRecord().split(Constants.STAR);
 												System.out.println("接收到的消息长度为：" + news.length);
+												System.out.println("接收到的消息为：" + selfClient.getCharRecord());
 												for(int newIndex = 0; newIndex < news.length; newIndex++) {
 													String messages[] = news[newIndex].split(Constants.LINE);
 													System.out.println(messages[0]+messages[1]+messages[2]+messages[3]);
@@ -279,23 +280,23 @@ public class FriendPanel extends JPanel {
 															// 将光标放置到消息的最后
 															pane.position = doc.getLength();
 															doc.insertString(doc.getLength(), messages[3], contentSet);
-//															if (!messages[4].equals("null") && messages[4].split("/").length > 0) {
-//																for (String str : messages[4].split("/")) {
-//																	int imgIndex = Integer.valueOf(str.substring(str.indexOf("|")+1));// 图片的位置（下标）
-//																	pane.historyTextPane.setCaretPosition(pane.position+imgIndex);// 光标
-//																	String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
-//																	String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
-//																	pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
-//																}
-//															}
+															if (!messages[4].equals("null") && messages[4].split("/").length > 0) {
+																for (String str : messages[4].split("/")) {
+																	int imgIndex = Integer.valueOf(str.substring(str.indexOf("|")+1));// 图片的位置（下标）
+																	pane.historyTextPane.setCaretPosition(pane.position+imgIndex);// 光标
+																	String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
+																	String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
+																	pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
+																}
+															}
 														} else {// 文字为空，说明发送的全部是图片
-//															for (String str : messages[4].split("/")) {
-//																// 此处要插入图片
-//																pane.historyTextPane.setCaretPosition(doc.getLength());// 光标
-//																String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
-//																String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
-//																pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
-//															}
+															for (String str : messages[4].split("/")) {
+																// 此处要插入图片
+																pane.historyTextPane.setCaretPosition(doc.getLength());// 光标
+																String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
+																String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
+																pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
+															}
 														}
 														// 换行
 														doc.insertString(doc.getLength(), "\n", contentSet);

@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Wed Jun 20 11:18:49 CST 2018
+onejar.license.required=false
+manifest.mergeall=true
+manifest.removesigners=false
+excludes=
+includes=
+onejar.checkbox=true
+onejar.expand=
+manifest.classpath=
+jarname=E\:\\git\\FEIQQ\\FEIQQ_fat.jar
+jarname.isextern=true
+manifest.file=<createnew>
+manifest.mainclass=feiqq.StartClient

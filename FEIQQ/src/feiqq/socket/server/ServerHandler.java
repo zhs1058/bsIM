@@ -9,8 +9,11 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
+import org.apache.log4j.Logger;
+
 import feiqq.bean.Category;
 import feiqq.bean.Group;
+import feiqq.StartClient;
 import feiqq.bean.CateMember;
 import feiqq.bean.Message;
 import feiqq.bean.Setup;
@@ -43,6 +46,9 @@ public class ServerHandler implements ChannelInboundHandler {
 	private OffLineDao offLineDao;
 	private SetupDao setupDao;
 	private CharRecordDao charRecordDao;
+	
+
+	final Logger log = Logger.getLogger(ServerHandler.class);
 
 	// 这里其实可以直接使用ip存储，为了防止一台电脑登录多个账号
 	/** key：SocketAddress，value：用户Id */
@@ -68,6 +74,7 @@ public class ServerHandler implements ChannelInboundHandler {
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		System.out.println(ctx.channel().remoteAddress() + "连接成功！");
+		log.info(ctx.channel().remoteAddress() + "连接成功！");
 		// // 跟客户端打招呼
 		// ctx.channel().writeAndFlush(
 		// ByteBufAllocator.DEFAULT.buffer().writeBytes(
@@ -77,6 +84,7 @@ public class ServerHandler implements ChannelInboundHandler {
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		System.out.println(ctx.channel().remoteAddress() + "掉线了！");
+		log.info(ctx.channel().remoteAddress() + "掉线了！");
 		clientMap.remove(map.get(ctx.channel().remoteAddress()));
 		map.remove(ctx.channel().remoteAddress());
 		System.err.println("map大小:" + map.size());
@@ -151,6 +159,7 @@ public class ServerHandler implements ChannelInboundHandler {
 		Message message = JsonUtil.transToBean(msgStr);
 		// 查询预置信息
 		if(null != message && Constants.SEARCH_PRESET_INFO.equals(message.getType())) {
+			log.info(channel.remoteAddress() + " 查询预置信息");
 			String mac = message.getContent();
 			Setup setup = setupDao.getMessageByMac(mac);
 			if(setup != null) {
@@ -176,6 +185,7 @@ public class ServerHandler implements ChannelInboundHandler {
 		}
 		// 登陆
 		if (null != message && Constants.LOGIN_MSG.equals(message.getType())) {
+			log.info(channel.remoteAddress() + " 登陆");
 			String content = message.getContent();
 			String msgStr1[] = content.split(Constants.LEFT_SLASH);
 			User user = userDao.getByUserName(msgStr1[0]);
@@ -214,6 +224,7 @@ public class ServerHandler implements ChannelInboundHandler {
 			
 			//检查离线消息
 			System.out.println("正在检查离线消息");
+			log.info(channel.remoteAddress() + " 正在检查离线消息");
 			List<Message> listMessage = offLineDao.getOffLineMessage(user.getId());
 			if(listMessage != null && listMessage.size() > 0) {
 				for(Message messages : listMessage) {
@@ -225,6 +236,7 @@ public class ServerHandler implements ChannelInboundHandler {
 			
 			//检查群组离线消息
 			System.out.println("正在检查群组离线消息");
+			log.info(channel.remoteAddress() + " 正在检查群组离线消息");
 			List<Message> listMessageChars = offLineDao.getOffLineCharsMessage(user.getId());
 			if(listMessageChars != null && listMessageChars.size() > 0) {
 				for(Message messages : listMessageChars) {
@@ -238,6 +250,7 @@ public class ServerHandler implements ChannelInboundHandler {
 		}
 		//找回密码
 		if(null != message && Constants.FIND_PASSWORD.equals(message.getType())) {
+			log.info(channel.remoteAddress() + " 执行了找回密码功能");
 			Message backMsg = new Message();
 			backMsg.setType(Constants.PALIND_MSG);
 			backMsg.setPalindType(Constants.ECHO_FIND_PASSWORD);
@@ -263,32 +276,37 @@ public class ServerHandler implements ChannelInboundHandler {
 			List<Message> messageList = charRecordDao.getCharRecord(msgStr1[0], msgStr1[1]);
 			if(messageList != null && messageList.size() > 0) {
 				for(Message mes : messageList) {
-					if(contents == null) {
-						contents = mes.getSenderName() + Constants.LINE + mes.getReceiverName() + Constants.LINE + mes.getSendTime() + Constants.LINE;
-						if(mes.getContent() != null) {
-							contents += mes.getContent() + Constants.LEFT_SLASH;
+					//System.out.println("输出的内容为：" + mes.getContent());
+					//if(!mes.getContent().equals("***")) {
+						//System.out.println("输出的内容为1：" + mes.getContent());
+						if(contents == null) {
+							contents = mes.getSenderName() + Constants.LINE + mes.getReceiverName() + Constants.LINE + mes.getSendTime() + Constants.LINE;
+							if(mes.getContent().length() != 0) {
+								contents += mes.getContent() + Constants.LINE;
+							}else {
+								contents += Constants.NULL + Constants.LINE;
+							}
+							if(mes.getImageMark().length() != 0) {
+								contents += mes.getImageMark() + Constants.STAR;
+							}else{
+								contents += Constants.NULL + Constants.STAR;
+							}
+									 
 						}else {
-							contents += Constants.NULL + Constants.LEFT_SLASH;
+							contents += mes.getSenderName() + Constants.LINE + mes.getReceiverName() + Constants.LINE + mes.getSendTime() + Constants.LINE;
+							if(mes.getContent().length() != 0) {
+								contents += mes.getContent() + Constants.LINE;
+							}else {
+								contents += Constants.NULL + Constants.LINE;
+							}
+							if(mes.getImageMark().length() != 0) {
+								contents += mes.getImageMark() + Constants.STAR;
+							}else{
+								contents += Constants.NULL + Constants.STAR;
+							}
 						}
-//						if(mes.getImageMark() != null) {
-//							contents += mes.getImageMark() + Constants.LEFT_SLASH;
-//						}else{
-//							contents += Constants.NULL + Constants.LEFT_SLASH;
-//						}
-								 
-					}else {
-						contents += mes.getSenderName() + Constants.LINE + mes.getReceiverName() + Constants.LINE + mes.getSendTime() + Constants.LINE;
-						if(mes.getContent() != null) {
-							contents += mes.getContent() + Constants.LEFT_SLASH;
-						}else {
-							contents += Constants.NULL + Constants.LEFT_SLASH;
-						}
-//						if(mes.getImageMark() != null) {
-//							contents += mes.getImageMark() + Constants.LEFT_SLASH;
-//						}else{
-//							contents += Constants.NULL + Constants.LEFT_SLASH;
-//						}
-					}
+					//}
+					
 					
 				}
 				//System.out.print("这该死的样例是这样的：" + contents);
@@ -349,7 +367,11 @@ public class ServerHandler implements ChannelInboundHandler {
 					
 				}
 				backMsg.setSenderType(Constants.FRIEND);
-				charRecordDao.saveMessage(backMsg);
+				//System.out.println("消息内容为：" + message.getContent());
+				if(Constants.GENRAL_MSG.equals(message.getType())) {
+					charRecordDao.saveMessage(backMsg);
+				}
+				
 				//对方是否在线
 				if (null != clientMap.get(message.getReceiverId())) {
 					sendMsg(clientMap.get(message.getReceiverId()), backMsg);
@@ -390,18 +412,21 @@ public class ServerHandler implements ChannelInboundHandler {
 		}
 		// 注册
 		if (null != message && Constants.REGISTER_MSG.equals(message.getType())) {
+			log.info(channel.remoteAddress() + " 执行注册功能");
 			Message backMsg = register(message, channel);
 			backMsg.setPalindType(Constants.REGISTER_MSG);
 			sendMsg(channel, backMsg);
 		}
 		//修改个性签名
 		if(null != message && Constants.CHANGE_SIGNINFO.equals(message.getType())) {
+			log.info(channel.remoteAddress() + " 执行修改个性签名功能");
 			String msgs[] = message.getContent().split(Constants.LEFT_SLASH);
 			userDao.updateSign(msgs[0], msgs[1]);
 			
 		}
 		//修改密码
 		if(null != message && Constants.CHANGE_PASSWORD.equals(message.getType())) {
+			log.info(channel.remoteAddress() + " 执行修改密码功能");
 			Message backMsg = new Message();
 			backMsg.setType(Constants.PALIND_MSG);
 			backMsg.setPalindType(Constants.ECHO_CHANGE_PASSWORD);
@@ -420,6 +445,7 @@ public class ServerHandler implements ChannelInboundHandler {
 		}
 		//修改个人信息
 		if(null != message && Constants.CHANGE_INFO.equals(message.getType())) {
+			log.info(channel.remoteAddress() + " 执行了修改个人信息功能");
 			boolean flag = false;
 			Message backMsg = new Message();
 			backMsg.setType(Constants.PALIND_MSG);
@@ -480,6 +506,7 @@ public class ServerHandler implements ChannelInboundHandler {
 		}
 		// 请求添加好友
 		if (null != message && Constants.REQUEST_ADD_MSG.equals(message.getType())) {
+			log.info(channel.remoteAddress() + " 执行了添加好友功能");
 			Message backMsg = new Message();
 			// cateId/account
 			String content[] = message.getContent().split(Constants.LEFT_SLASH);
@@ -593,6 +620,7 @@ public class ServerHandler implements ChannelInboundHandler {
 		}
 		// 删除分组
 		if (null != message && Constants.DELETE_USER_CATE_MSG.equals(message.getType())) {
+			log.info(channel.remoteAddress() + " 执行了删除分组功能");
 			Message backMsg = new Message();
 			backMsg.setType(Constants.PALIND_MSG);
 			backMsg.setPalindType(Constants.DELETE_USER_CATE_MSG);
@@ -619,6 +647,7 @@ public class ServerHandler implements ChannelInboundHandler {
 		}
 		//删除群聊
 		if(null != message && Constants.DELETE_GROUP.equals(message.getType())) {
+			log.info(channel.remoteAddress() + " 执行了退出群聊功能");
 			Message backMsg = new Message();
 			String content[] = message.getContent().split(Constants.LEFT_SLASH);
 			groupUserDao.deleteByGroupIdAndUserId(content[0], content[1]);
@@ -629,6 +658,7 @@ public class ServerHandler implements ChannelInboundHandler {
 		}
 		//创建群聊
 		if(null != message && Constants.CREATE_GROUP.equals(message.getType())) {
+			log.info(channel.remoteAddress() + " 执行了创建群聊功能");
 			Message backMsg = new Message();
 			String groupName = message.getContent();
 			groupDao.saveGroup(groupName);
@@ -650,6 +680,7 @@ public class ServerHandler implements ChannelInboundHandler {
 		}
 		//加入群聊
 		if(null != message && Constants.ADD_GROUP.equals(message.getType())) {
+			log.info(channel.remoteAddress() + " 加入了群聊");
 			Message backMsg = new Message();
 			String groupName = message.getContent();
 //			backMsg.setSenderName(message.getSenderName());
@@ -671,6 +702,7 @@ public class ServerHandler implements ChannelInboundHandler {
 		}
 		// 删除成员
 		if (null != message && Constants.DELETE_USER_MEMBER_MSG.equals(message.getType())) {
+			log.info(channel.remoteAddress() + " 执行了删除好友功能");
 			Message backMsg = new Message();
 			backMsg.setType(Constants.PALIND_MSG);
 			backMsg.setPalindType(Constants.DELETE_USER_MEMBER_MSG);
@@ -690,6 +722,7 @@ public class ServerHandler implements ChannelInboundHandler {
 		}
 		// 添加分组
 		if (null != message && Constants.ADD_USER_CATE_MSG.equals(message.getType())) {
+			log.info(channel.remoteAddress() + " 执行了添加分组功能");
 			// 暂时只处理好友列表,QQ群什么的暂时不管
 			Message backMsg = new Message();
 			backMsg.setType(Constants.PALIND_MSG);
@@ -702,6 +735,7 @@ public class ServerHandler implements ChannelInboundHandler {
 		}
 		// 修改分组
 		if (null != message && Constants.EDIT_USER_CATE_MSG.equals(message.getType())) {
+			log.info(channel.remoteAddress() + " 修改了分组");
 			String content[] = message.getContent().split(Constants.LEFT_SLASH);
 			Category cate = cateDao.editCategory(content[0], content[1]);
 			Message backMsg = new Message();

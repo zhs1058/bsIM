@@ -15,6 +15,10 @@ public class CharRecordDao extends BaseDao {
 	 * 
 	 */
 	public boolean saveMessage(Message message) {
+//		System.out.println("长度为：" + message.getContent().length());
+//		if(message.getContent() == "") {
+//			message.setContent("***");
+//		}
 		String condition = message.getSenderName() + "_" + message.getReceiverName();
 		String sql = " insert into fqq_char_record (s_r , time , sender_id , sender_name ,"
 				+ " receiver_id , receiver_name , "

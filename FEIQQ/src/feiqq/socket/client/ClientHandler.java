@@ -20,7 +20,6 @@ import feiqq.ui.group.GroupNode;
 import feiqq.util.Constants;
 import feiqq.util.JsonUtil;
 import feiqq.util.MacUtil;
-import feiqq.util.MusicUtil;
 import feiqq.util.PictureUtil;
 import feiqq.util.StringUtil;
 import io.netty.buffer.ByteBuf;
@@ -297,10 +296,7 @@ public class ClientHandler implements ChannelInboundHandler {
 				client.cateNodeMap.put(category.getId(), cateNode);// 记录
 			}
 			if (Constants.EDIT_USER_CATE_MSG.equals(message.getPalindType())) {
-				// TODO 这个地方注意啊，不要想着map集合可以去重复，就直接放置一个新的node进去，大错特错啊
-				// 放置一个新的，但是这样相当于在内存中又是一个新的，这样在刷新的时候会有问题，调用不到
-				// 坑了老夫几多天啊，我嘞个去、、、
-				// 将本地记录一并更改
+				
 				Category category = message.getCategory();
 				CategoryNode cateNode = client.cateNodeMap.get(category.getId());
 				cateNode.category = category;
@@ -382,7 +378,7 @@ public class ClientHandler implements ChannelInboundHandler {
 				// 当前窗体获得焦点
 				room.requestFocus();
 				// 音乐
-				MusicUtil.playMsgMusic();
+				//MusicUtil.playMsgMusic();
 			}
 		}
 		
@@ -460,18 +456,27 @@ public class ClientHandler implements ChannelInboundHandler {
 				// 当前窗体获得焦点
 				room.requestFocus();
 				// 音乐
-				MusicUtil.playMsgMusic();
+				//MusicUtil.playMsgMusic();
 			}
 		}
 		// 抖动
 		if (null != message && Constants.SHAKE_MSG.equals(message.getType())) {
+			int count = 0;
+			while(client.getCharRecord() == null) {
+				System.out.println("等待回执。。。");
+				count++;
+				if(count > 1000) {
+					break;
+				}
+			}
 			User self = client.getUser();
 			User user = client.buddyNodeMap.get(message.getSenderName()).getFriend();
 			ChatRoom room = client.getRoom() == null ? 
 					ChatRoom.getInstance(client) : client.getRoom();
 			ChatRoomPanel pane = null;
 			// 相应好友的panel没打开
-			if (!client.tabMap.containsKey(message.getSenderName())) {
+			if (!client.tabMap.containsKey(user.getNickName())) {
+				System.out.println("没打开？");
 				room.setTitle(message.getReceiverName() + " - " + message.getSenderName());
 				room.titleLabel.setText(message.getReceiverName() + " - " + message.getSenderName());
 				pane = new ChatRoomPanel(client, self, user);
@@ -482,7 +487,7 @@ public class ClientHandler implements ChannelInboundHandler {
 				int index = room.tabbedPane.indexOfTab(user.getNickName());
 				room.tabbedPane.setSelectedIndex(index);
 				// 音乐
-				MusicUtil.playMsgMusic();
+				//MusicUtil.playMsgMusic();
 				// 抖动
 				new ShakeThread(room).start();
 				// 将room信息返回
@@ -499,9 +504,66 @@ public class ClientHandler implements ChannelInboundHandler {
 				// 当前窗体获得焦点
 				room.requestFocus();
 				// 音乐
-				MusicUtil.playMsgMusic();
+				//MusicUtil.playMsgMusic();
 				// 抖动
 				new ShakeThread(room).start();
+			}
+			
+			if(client.getCharRecord() != null) {
+				String news[] = client.getCharRecord().split(Constants.STAR);
+				System.out.println("接收到的消息长度为：" + news.length);
+				System.out.println("接收到的消息为：" + client.getCharRecord());
+				for(int newIndex = 0; newIndex < news.length; newIndex++) {
+					String messages[] = news[newIndex].split(Constants.LINE);
+					System.out.println(messages[0]+messages[1]+messages[2]+messages[3]);
+					try {
+						StyledDocument doc = pane.historyTextPane.getStyledDocument();
+						// 名称、日期
+						SimpleAttributeSet nameSet = getDefaultAttributeSet();
+						doc.insertString(doc.getLength(), StringUtil.createHistoryInfo(messages[0], messages[1], messages[2]), nameSet);
+						SimpleAttributeSet contentSet = getDefaultAttributeSet();
+						
+						// 缩进
+						StyleConstants.setLeftIndent(contentSet, 10);
+						// 此处开始缩进
+						doc.setParagraphAttributes(doc.getLength(), doc.getLength(), contentSet, true);
+						// 正文
+						// 文字或者图文混合
+						if (!messages[3].equals("null")) {
+							// 记录下这行消息插入的光标在哪里
+							// 将光标放置到消息的最后
+							pane.position = doc.getLength();
+							doc.insertString(doc.getLength(), messages[3], contentSet);
+							if (!messages[4].equals("null") && messages[4].split("/").length > 0) {
+								for (String str : messages[4].split("/")) {
+									int imgIndex = Integer.valueOf(str.substring(str.indexOf("|")+1));// 图片的位置（下标）
+									pane.historyTextPane.setCaretPosition(pane.position+imgIndex);// 光标
+									String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
+									String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
+									pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
+								}
+							}
+						} else {// 文字为空，说明发送的全部是图片
+							for (String str : messages[4].split("/")) {
+								// 此处要插入图片
+								pane.historyTextPane.setCaretPosition(doc.getLength());// 光标
+								String mark = str.substring(str.indexOf(")")+1, str.indexOf("|"));
+								String fileName = "/feiqq/resource/image/face/" + mark + ".gif";
+								pane.historyTextPane.insertIcon(new ImageIcon(Emoticon.class.getResource(fileName)));
+							}
+						}
+						// 换行
+						doc.insertString(doc.getLength(), "\n", contentSet);
+						// 将缩进还原回来
+						StyleConstants.setLeftIndent(contentSet, 0f);
+						doc.setParagraphAttributes(doc.getLength(), doc.getLength(), contentSet, true);
+			
+					} catch (BadLocationException e1) {
+						e1.printStackTrace();
+					}
+					
+				}
+				client.setCharRecord(null);
 			}
 			// 将队列里面的消息显示在面板上
 			if (client.msgQueMap.size() > 0) {
@@ -614,6 +676,16 @@ public class ClientHandler implements ChannelInboundHandler {
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
 			throws Exception {
 		System.out.println("Client---userEventTriggered");
+	}
+	
+	private SimpleAttributeSet getDefaultAttributeSet() {
+		SimpleAttributeSet set = new SimpleAttributeSet();
+		StyleConstants.setBold(set, false);
+		StyleConstants.setItalic(set, false);
+		StyleConstants.setFontSize(set, 15);
+		StyleConstants.setFontFamily(set, "宋体");
+		StyleConstants.setForeground(set, Color.GRAY);
+		return set;
 	}
 
 	/**

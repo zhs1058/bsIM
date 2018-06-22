@@ -62,7 +62,7 @@ public class ChatRoomPanel extends JPanel {
 	/** 工具面板 */
 	private JPanel tools;
 	/** 截屏按钮 */
-	private JLabel screen;
+	//private JLabel screen;
 	/** 抖动按钮 */
 	private JLabel shake;
 	/** 表情按钮 */
@@ -210,11 +210,11 @@ public class ChatRoomPanel extends JPanel {
 			shake.setToolTipText("抖动");
 			shake.setIcon(PictureUtil.getPicture("shake.png"));
 			
-			screen = new JLabel();
-			tools.add(screen);
-			screen.setBounds(100, 3, 20, 20);
-			screen.setToolTipText("截屏");
-			screen.setIcon(PictureUtil.getPicture("screenCapture.png"));
+//			screen = new JLabel();
+//			tools.add(screen);
+//			screen.setBounds(100, 3, 20, 20);
+//			screen.setToolTipText("截屏");
+//			screen.setIcon(PictureUtil.getPicture("screenCapture.png"));
 			
 			// 输入框
 			input = new JPanel();
@@ -366,16 +366,16 @@ public class ChatRoomPanel extends JPanel {
 			}
 		});
 		// 工具栏-截屏
-		screen.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseExited(MouseEvent e) {
-				screen.setBorder(BorderFactory.createEmptyBorder());
-			}
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				screen.setBorder(Constants.LIGHT_GRAY_BORDER);
-			}
-		});
+//		screen.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseExited(MouseEvent e) {
+//				screen.setBorder(BorderFactory.createEmptyBorder());
+//			}
+//			@Override
+//			public void mouseEntered(MouseEvent e) {
+//				screen.setBorder(Constants.LIGHT_GRAY_BORDER);
+//			}
+//		});
 		// 回车发送
 		inputTextPane.addKeyListener(new KeyAdapter() {
 			@Override

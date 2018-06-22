@@ -119,6 +119,7 @@ public class Constants {
 	public static String NEWLINE = "\n";
 	/** 左斜杠 */
 	public static String LEFT_SLASH = "/";
+	public static String STAR = "%";
 	/** 横线 */
 	public static String LINE = "_";
 	
